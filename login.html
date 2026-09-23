@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | ApexBank</title>
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+
+    <header class="auth-header">
+        <a href="login.html" class="brand">🏦 Apex<span>Bank</span></a>
+        <a href="signup.html" class="nav-link">Open Account</a>
+    </header>
+
+    <main class="auth-wrapper">
+        <div class="auth-card">
+            
+            <div class="auth-hero">
+                <h1 class="hero-title">Banking Made Simple & Secure</h1>
+                <p class="hero-desc">Manage your accounts, transfer funds, and monitor expenses with bank-grade security.</p>
+                <ul class="features">
+                    <li>High-Yield Checking & Savings</li>
+                    <li>End-to-End Encrypted Transfers</li>
+                    <li>256-Bit SSL Protection</li>
+                </ul>
+            </div>
+
+            <div class="auth-form-box">
+                <h2 class="form-title">Welcome Back</h2>
+                <p class="form-subtitle">Sign in to access your banking dashboard.</p>
+
+                <form action="index.html" method="GET">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email or Account ID</label>
+                        <input type="email" id="email" name="email" class="form-input" placeholder="name@domain.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" name="password" class="form-input" placeholder="••••••••" required minlength="8">
+                    </div>
+
+                    <div class="form-row">
+                        <label class="checkbox-group">
+                            <input type="checkbox" name="remember"> Remember Me
+                        </label>
+                        <a href="forgot-password.html" class="auth-link">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Sign In</button>
+                </form>
+
+                <div class="form-switch">
+                    Don't have an account? <a href="signup.html" class="auth-link">Sign Up</a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="auth-footer">
+        &copy; 2026 ApexBank Financial Inc. All rights reserved.
+    </footer>
+
+</body>
+</html>
