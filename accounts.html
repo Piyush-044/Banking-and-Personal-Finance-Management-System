@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounts Management | ApexBank</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Main Navigation Header -->
+    <header class="main-nav">
+        <div class="nav-container">
+            <a href="login.html" class="brand">
+                <span class="brand-icon">🏦</span>
+                <span>Apex<span>Bank</span></span>
+            </a>
+
+            <nav>
+                <ul class="nav-links">
+                    <li class="nav-item">
+                        <a href="index.html">
+                            <span>📊</span> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a href="accounts.html">
+                            <span>💳</span> Accounts
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="transactions.html">
+                            <span>🔄</span> Transactions
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="nav-user-actions">
+                <div class="user-profile-badge">
+                    <div class="user-avatar">AM</div>
+                    <div class="user-info">
+                        <span class="user-name">Alex Morgan</span>
+                        <span class="user-status">Verified Account</span>
+                    </div>
+                </div>
+                <a href="login.html" class="btn-signout">Sign Out</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+        <!-- Page Header -->
+        <section class="page-header">
+            <div class="page-title-group">
+                <h1><span>🏦</span> Accounts Overview</h1>
+                <p>Manage your linked savings, checking accounts, fixed deposits, and credit cards.</p>
+            </div>
+            <div class="page-actions">
+                <a href="#open-account-form" class="btn-primary">
+                    <span>➕</span> Open New Account
+                </a>
+                <a href="transactions.html" class="btn-secondary">
+                    <span>💸</span> Transfer Money
+                </a>
+            </div>
+        </section>
+
+        <!-- KPI Metric Summary Cards -->
+        <section class="stats-grid">
+            <div class="stat-card emerald">
+                <div class="stat-top">
+                    <span class="stat-label">Total Net Worth</span>
+                    <div class="stat-icon emerald">💼</div>
+                </div>
+                <div class="stat-value">₹14,85,620.00</div>
+                <div class="stat-trend trend-up">
+                    <span>▲ +8.4%</span> from last month
+                </div>
+            </div>
+
+            <div class="stat-card blue">
+                <div class="stat-top">
+                    <span class="stat-label">Everyday Checking</span>
+                    <div class="stat-icon blue">💳</div>
+                </div>
+                <div class="stat-value">₹3,45,220.00</div>
+                <div class="stat-trend trend-neutral">
+                    <span>• Active</span> (Acc: *4921)
+                </div>
+            </div>
+
+            <div class="stat-card emerald">
+                <div class="stat-top">
+                    <span class="stat-label">High-Yield Savings</span>
+                    <div class="stat-icon emerald">💰</div>
+                </div>
+                <div class="stat-value">₹9,20,400.00</div>
+                <div class="stat-trend trend-up">
+                    <span>▲ 4.5% APY</span> Earning Interest
+                </div>
+            </div>
+
+            <div class="stat-card purple">
+                <div class="stat-top">
+                    <span class="stat-label">Investments & FD</span>
+                    <div class="stat-icon purple">📈</div>
+                </div>
+                <div class="stat-value">₹2,20,000.00</div>
+                <div class="stat-trend trend-up">
+                    <span>▲ 7.2% ROI</span> Maturing Dec 2027
+                </div>
+            </div>
+        </section>
+
+        <!-- Bank Account Cards Grid -->
+        <section>
+            <div class="section-title">
+                <h2>My Active Accounts & Cards</h2>
+                <span class="category-pill">4 Linked Accounts</span>
+            </div>
+
+            <div class="accounts-grid">
+
+                <!-- Account 1: Everyday Checking -->
+                <div class="account-card-box">
+                    <div class="virtual-card-skin skin-checking">
+                        <div class="card-top-row">
+                            <span class="card-bank-brand">🏦 ApexBank</span>
+                            <span class="card-type-badge">Checking</span>
+                        </div>
+                        <div class="card-chip-container">
+                            <div class="emv-chip"></div>
+                            <span class="contactless-wave">📶</span>
+                        </div>
+                        <div class="card-account-number">4532 •••• •••• 4921</div>
+                        <div class="card-bottom-row">
+                            <div>
+                                <span class="card-holder-name">Alex Morgan</span>
+                            </div>
+                            <div>
+                                <span class="card-expiry">EXP 08/29</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="account-card-body">
+                        <div class="balance-box">
+                            <span class="balance-title">Available Balance</span>
+                            <span class="balance-amount">₹3,45,220.00</span>
+                        </div>
+                        <div class="account-meta-list">
+                            <div class="meta-item">
+                                <span>Account Number</span>
+                                <strong>APX-1029-4482-01</strong>
+                            </div>
+                            <div class="meta-item">
+                                <span>Account Type</span>
+                                <strong>Everyday Checking</strong>
+                            </div>
+                            <div class="meta-item">
+                                <span>Branch / IFSC</span>
+                                <strong>APEX0001842 (Cyber City)</strong>
+                            </div>
+                            <div class="meta-item">
+                                <span>Account Status</span>
+                                <span class="badge-status active">Active</span>
+                            </div>
+                        </div>
+                        <div class="account-card-actions">
+                            <a href="transactions.html" class="btn-primary">Transfer</a>
+                            <a href="transactions.html" class="btn-secondary">History</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account 2: High Yield Savings -->
+                <div class="account-card-box">
+                    <div class="virtual-card-skin skin-savings">
+                        <div class="card-top-row">
+                            <span class="card-bank-brand">🏦 ApexBank</span>
+                            <span class="card-type-badge">Savings Pro</span>
+                        </div>
+                        <div class="card-chip-container">
+                            <div class="emv-chip"></div>
+                            <span class="contactless-wave">📶</span>
+                        </div>
+                        <div class="card-account-number">5184 •••• •••• 8839</div>
+                        <div class="card-bottom-row">
+                            <div>
+                                <span class="card-holder-name">Alex Morgan</span>
+                            </div>
+                            <div>
+                                <span class="card-expiry">EXP 11/30</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="account-card-body">
+                        <div class="balance-box">
+                            <span class="balance-title">Available Balance</span>
+                            <span class="balance-amount">₹9,20,400.00</span>
+                        </div>
+                        <div class="account-meta-list">
+                            <div class="meta-item">
+                                <span>Account Number</span>
+                                <strong>APX-8839-2011-02</strong>
+                            </div>
+                            <div class="meta-item">
+                                <span>Interest Rate</span>
+                                <strong>4.50% p.a. (Monthly Payout)</strong>
+                            </div>
+                            <div class="meta-item">
+                                <span>Accrued Interest (YTD)</span>
+                                <strong>₹24,180.00</strong>
+                            </div>
+                            <div class="meta-item">
+                                <span>Account Status</span>
+                                <span class="badge-status active">Active</span>
+                            </div>
+                        </div>
+                        <div class="account-card-actions">
+                            <a href="transactions.html" class="btn-primary">Add Funds</a>
+                            <a href="transactions.html" class="btn-secondary">Statement</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account 3: Investment Term Deposit -->
+                <div class="account-card-box">
+                    <div class="virtual-card-skin skin-investment">
+                        <div class="card-top-row">
+                            <span class="card-bank-brand">🏦 ApexBank</span>
+                            <span class="card-type-badge">Fixed Deposit</span>
+                        </div>
+                        <div class="card-chip-container">
+                            <div class="emv-chip"></div>
+                            <span class="contactless-wave">🔒</span>
+                        </div>
+                        <div class="card-account-number">FD-CERT •••• 7744</div>
+                        <div class="card-bottom-row">
+                            <div>
+                                <span class="card-holder-name">Alex Morgan</span>
+                            </div>
+                            <div>
+                                <span class="card-expiry">MAT 12/27</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="account-card-body">
+                        <div class="balance-box">
+                            <span class="balance-title">Maturity Value</span>
+                            <span class="balance-amount">₹2,84,500.00</span>
+                        </div>
+                        <div class="account-meta-list">
+                            <div class="meta-item">
+                                <span>Certificate No.</span>
+                                <strong>APX-1102-7744-FD</strong>
+                            </div>
+                            <div class="meta-item">
+                                <span>Principal Invested</span>
+                                <strong>₹2,20,000.00</strong>
+                            </div>
+                            <div class="meta-item">
+                                <span>Guaranteed Rate</span>
+                                <strong>7.20% Compounded</strong>
+                            </div>
+                            <div class="meta-item">
+                                <span>Account Status</span>
+                                <span class="badge-status locked">Locked</span>
+                            </div>
+                        </div>
+                        <div class="account-card-actions">
+                            <a href="#" class="btn-secondary">Download Advice</a>
+                            <a href="#open-account-form" class="btn-primary">New FD</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account 4: Apex Platinum Credit Card -->
+                <div class="account-card-box">
+                    <div class="virtual-card-skin skin-credit">
+                        <div class="card-top-row">
+                            <span class="card-bank-brand">🏦 ApexBank</span>
+                            <span class="card-type-badge">Platinum Credit</span>
+                        </div>
+                        <div class="card-chip-container">
+                            <div class="emv-chip"></div>
+                            <span class="contactless-wave">📶</span>
+                        </div>
+                        <div class="card-account-number">4929 •••• •••• 6192</div>
+                        <div class="card-bottom-row">
+                            <div>
+                                <span class="card-holder-name">Alex Morgan</span>
+                            </div>
+                            <div>
+                                <span class="card-expiry">EXP 04/31</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="account-card-body">
+                        <div class="balance-box">
+                            <span class="balance-title">Available Credit</span>
+                            <span class="balance-amount">₹1,80,000.00</span>
+                        </div>
+                        <div class="account-meta-list">
+                            <div class="meta-item">
+                                <span>Total Credit Limit</span>
+                                <strong>₹2,50,000.00</strong>
+                            </div>
+                            <div class="meta-item">
+                                <span>Current Outstanding</span>
+                                <strong style="color: #f87171;">₹70,000.00</strong>
+                            </div>
+                            <div class="meta-item">
+                                <span>Payment Due Date</span>
+                                <strong>15 Oct 2026</strong>
+                            </div>
+                            <div class="meta-item">
+                                <span>Status</span>
+                                <span class="badge-status active">Active</span>
+                            </div>
+                        </div>
+                        <div class="account-card-actions">
+                            <a href="transactions.html" class="btn-primary">Pay Bill</a>
+                            <a href="transactions.html" class="btn-secondary">Card History</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Two Column Section: Form + Security & Analytics -->
+        <section class="two-col-layout">
+
+            <!-- Left: Open a New Account Application Form -->
+            <div class="content-panel" id="open-account-form">
+                <div class="panel-header">
+                    <div>
+                        <h2><span>📝</span> Open a New Account</h2>
+                        <p>Fill out the application below to open a new savings, checking, or fixed deposit account.</p>
+                    </div>
+                </div>
+
+                <form action="accounts.html" method="GET" class="banking-form">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="acc-type" class="form-label">Account Type</label>
+                            <select id="acc-type" name="acc_type" class="form-select" required>
+                                <option value="" disabled selected>Select Account Category</option>
+                                <option value="savings">High-Yield Savings (4.5% APY)</option>
+                                <option value="checking">Everyday Checking Account</option>
+                                <option value="fd">Fixed Term Deposit (7.2% ROI)</option>
+                                <option value="business">Apex Business & Merchant Account</option>
+                                <option value="forex">Global Multi-Currency Forex Account</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="currency" class="form-label">Account Currency</label>
+                            <select id="currency" name="currency" class="form-select" required>
+                                <option value="INR" selected>INR - Indian Rupee (₹)</option>
+                                <option value="USD">USD - US Dollar ($)</option>
+                                <option value="EUR">EUR - Euro (€)</option>
+                                <option value="GBP">GBP - British Pound (£)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="deposit-amount" class="form-label">
+                                Initial Deposit
+                                <span class="helper">Min. ₹1,000</span>
+                            </label>
+                            <div class="input-with-affix">
+                                <span class="input-prefix">₹</span>
+                                <input type="number" id="deposit-amount" name="deposit_amount" class="form-control" placeholder="10,000" min="1000" step="500" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="funding-source" class="form-label">Funding Account</label>
+                            <select id="funding-source" name="funding_source" class="form-select" required>
+                                <option value="checking">Everyday Checking (₹3,45,220.00)</option>
+                                <option value="savings">High-Yield Savings (₹9,20,400.00)</option>
+                                <option value="external">External Bank UPI / IMPS</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="branch-office" class="form-label">Preferred Branch</label>
+                            <select id="branch-office" name="branch" class="form-select" required>
+                                <option value="digital" selected>Digital Banking Branch (Paperless)</option>
+                                <option value="mumbai">Mumbai - Nariman Point Branch</option>
+                                <option value="delhi">New Delhi - Connaught Place Branch</option>
+                                <option value="bengaluru">Bengaluru - Koramangala Hub</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nominee-name" class="form-label">Nominee Full Name</label>
+                            <input type="text" id="nominee-name" name="nominee_name" class="form-control" placeholder="e.g. Priya Sharma" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nominee-relation" class="form-label">Nominee Relationship</label>
+                        <select id="nominee-relation" name="nominee_relation" class="form-select">
+                            <option value="spouse">Spouse</option>
+                            <option value="parent">Parent</option>
+                            <option value="child">Child</option>
+                            <option value="sibling">Sibling</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-checkbox-label">
+                            <input type="checkbox" name="debit_card_opt" checked>
+                            <span>Issue an instant virtual contactless Platinum Debit Card for this account.</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-checkbox-label">
+                            <input type="checkbox" name="agree_terms" required>
+                            <span>I confirm the accuracy of the provided information and agree to ApexBank's Terms of Account Opening & Deposit Rules.</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        <span>🚀</span> Submit Account Application
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right: Account Portfolio & Security Controls -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+
+                <!-- Portfolio Allocation Breakdown -->
+                <div class="content-panel">
+                    <div class="panel-header">
+                        <div>
+                            <h2><span>📊</span> Asset Allocation</h2>
+                            <p>Current distribution across your assets</p>
+                        </div>
+                    </div>
+
+                    <div class="asset-bars-wrapper">
+                        <div class="asset-bar-item">
+                            <div class="asset-bar-label">
+                                <span>High-Yield Savings</span>
+                                <span>62% (₹9.20L)</span>
+                            </div>
+                            <div class="asset-bar-track">
+                                <div class="asset-bar-fill" style="width: 62%; background: var(--primary);"></div>
+                            </div>
+                        </div>
+
+                        <div class="asset-bar-item">
+                            <div class="asset-bar-label">
+                                <span>Everyday Checking</span>
+                                <span>23% (₹3.45L)</span>
+                            </div>
+                            <div class="asset-bar-track">
+                                <div class="asset-bar-fill" style="width: 23%; background: var(--accent-blue);"></div>
+                            </div>
+                        </div>
+
+                        <div class="asset-bar-item">
+                            <div class="asset-bar-label">
+                                <span>Fixed Term Deposits</span>
+                                <span>15% (₹2.20L)</span>
+                            </div>
+                            <div class="asset-bar-track">
+                                <div class="asset-bar-fill" style="width: 15%; background: var(--accent-purple);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Security & Permissions (Pure CSS Switches) -->
+                <div class="content-panel">
+                    <div class="panel-header">
+                        <div>
+                            <h2><span>🛡️</span> Security & Card Controls</h2>
+                            <p>Instant toggles for active accounts & cards</p>
+                        </div>
+                    </div>
+
+                    <div class="toggle-list">
+                        <div class="toggle-item">
+                            <div class="toggle-info">
+                                <h4>Online E-Commerce Usage</h4>
+                                <p>Allow purchases on web and mobile apps</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-item">
+                            <div class="toggle-info">
+                                <h4>Contactless (Tap & Pay)</h4>
+                                <p>Enable NFC contactless point of sale</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-item">
+                            <div class="toggle-info">
+                                <h4>International Transactions</h4>
+                                <p>Allow cross-border payments & forex</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-item">
+                            <div class="toggle-info">
+                                <h4>ATM Cash Withdrawals</h4>
+                                <p>Permit cash withdrawals from ATMs</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Global Application Footer -->
+    <footer class="main-footer">
+        <div>
+            &copy; 2026 ApexBank Financial Inc. FDIC & RBI Insured. All rights reserved.
+        </div>
+        <ul class="footer-links">
+            <li><a href="login.html">Privacy Policy</a></li>
+            <li><a href="login.html">Terms of Service</a></li>
+            <li><a href="login.html">Security Guidelines</a></li>
+            <li><a href="login.html">Support Hotline: 1800-APEX-BANK</a></li>
+        </ul>
+    </footer>
+
+</body>
+</html>
