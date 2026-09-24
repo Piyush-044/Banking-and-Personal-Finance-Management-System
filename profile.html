@@ -11,7 +11,7 @@
   <div class="container">
 
     <!-- Sidebar Navigation -->
-    <div class="sidebar">
+    <aside class="sidebar">
       <h2>Apex Banking</h2>
 
       <div class="menu-label">Main Menu</div>
@@ -28,13 +28,13 @@
         <li><a href="#">Expenses</a></li>
         <li><a href="#">Reports</a></li>
       </ul>
-    </div>
+    </aside>
 
     <!-- Main Content Area -->
-    <div class="main-content">
+    <main class="main-content">
       
-      <!-- Header Area -->
-      <div class="header">
+      <!-- Top Header Bar -->
+      <header class="header">
         <h1>User Profile & Settings</h1>
         <div class="user-info">
           <a href="profile.html" class="user-link">
@@ -42,18 +42,18 @@
             <span>Welcome, Piyush Kumar</span>
           </a>
         </div>
-      </div>
+      </header>
 
-      <!-- Profile Header / Overview Banner Card -->
-      <div class="profile-header-card">
+      <!-- Profile Banner / Header Overview -->
+      <section class="profile-header-card">
         <div class="profile-banner-left">
           <div class="avatar-container">
             <div class="avatar-circle">PK</div>
-            <button class="avatar-edit-btn" title="Change Profile Picture">📷 Edit</button>
+            <button type="button" class="avatar-edit-btn" title="Change Profile Picture">📷 Edit</button>
           </div>
           <div class="profile-user-details">
             <h2>Piyush Kumar</h2>
-            <p class="user-email">piyush.kumar@apexbanking.com • Customer ID: <strong style="color: #38bdf8;">APX-984201</strong></p>
+            <p class="user-email">piyush.kumar@apexbanking.com • Customer ID: <strong class="text-highlight">APX-984201</strong></p>
             <div class="badge-group">
               <span class="badge-tag badge-success">✓ KYC Verified</span>
               <span class="badge-tag badge-info">Platinum Tier</span>
@@ -73,19 +73,19 @@
           </div>
           <div class="quick-stat-item">
             <span class="stat-label">Security Health</span>
-            <span class="stat-value" style="color: #10b981;">95% High</span>
+            <span class="stat-value text-emerald">95% High</span>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- Profile Content Grid Split -->
+      <!-- Profile Content Layout Grid -->
       <div class="content-grid">
         
         <!-- Left Main Column: Form Sections -->
         <div class="left-column">
 
           <!-- Section 1: Personal Details Form -->
-          <div class="section-box">
+          <section class="section-box">
             <div class="section-header">
               <h3>Personal Information</h3>
               <span class="subtitle">Update your personal account details and address</span>
@@ -175,10 +175,10 @@
                 <button type="reset" class="btn btn-secondary">Cancel</button>
               </div>
             </form>
-          </div>
+          </section>
 
           <!-- Section 2: Security & Password -->
-          <div class="section-box">
+          <section class="section-box">
             <div class="section-header">
               <h3>Security & Authentication</h3>
               <span class="subtitle">Manage password, two-factor authentication, and security preferences</span>
@@ -229,10 +229,10 @@
                 <button type="submit" class="btn">Update Security Settings</button>
               </div>
             </form>
-          </div>
+          </section>
 
           <!-- Section 3: Notification Preferences -->
-          <div class="section-box">
+          <section class="section-box">
             <div class="section-header">
               <h3>Notification & Alert Preferences</h3>
               <span class="subtitle">Control how you receive banking statements and security alerts</span>
@@ -242,7 +242,6 @@
               <div class="preference-group">
                 <label class="checkbox-container">
                   <input type="checkbox" checked>
-                  <span class="checkmark"></span>
                   <div class="checkbox-text">
                     <strong>Transaction Notifications</strong>
                     <p>Get immediate notifications for purchases over $50.00</p>
@@ -253,7 +252,6 @@
               <div class="preference-group">
                 <label class="checkbox-container">
                   <input type="checkbox" checked>
-                  <span class="checkmark"></span>
                   <div class="checkbox-text">
                     <strong>Security & Login Alerts</strong>
                     <p>Receive alerts when your account is accessed from a new device or location</p>
@@ -264,7 +262,6 @@
               <div class="preference-group">
                 <label class="checkbox-container">
                   <input type="checkbox" checked>
-                  <span class="checkmark"></span>
                   <div class="checkbox-text">
                     <strong>Monthly E-Statements</strong>
                     <p>Receive automated monthly PDF statements directly in your email</p>
@@ -275,7 +272,6 @@
               <div class="preference-group">
                 <label class="checkbox-container">
                   <input type="checkbox">
-                  <span class="checkmark"></span>
                   <div class="checkbox-text">
                     <strong>Marketing & Financial Tips</strong>
                     <p>Receive updates regarding special credit limits and investment insights</p>
@@ -287,7 +283,7 @@
                 <button type="submit" class="btn">Save Preferences</button>
               </div>
             </form>
-          </div>
+          </section>
 
         </div>
 
@@ -295,13 +291,13 @@
         <div class="right-column">
 
           <!-- Account Security Health Card -->
-          <div class="section-box">
+          <section class="section-box">
             <h3>Security Score</h3>
             <div class="security-score-wrapper">
               <div class="score-percentage">95%</div>
               <div class="score-rating">Security Level: <strong>Strong</strong></div>
               <div class="meter-bar">
-                <div class="meter-fill" style="width: 95%;"></div>
+                <div class="meter-fill width-95"></div>
               </div>
             </div>
             
@@ -311,10 +307,10 @@
               <li class="check-item check-pass">✓ Verified Mobile Phone</li>
               <li class="check-item check-pass">✓ Recovery Email confirmed</li>
             </ul>
-          </div>
+          </section>
 
           <!-- Relationship & Branch Info -->
-          <div class="section-box">
+          <section class="section-box">
             <h3>Banking Manager & Branch</h3>
             <div class="info-list">
               <div class="info-item">
@@ -334,11 +330,11 @@
                 <span class="info-value">s.jenkins@apexbanking.com</span>
               </div>
             </div>
-            <button class="btn btn-outline" style="width: 100%; margin-top: 15px;">Contact Manager</button>
-          </div>
+            <button type="button" class="btn btn-outline btn-full mt-3">Contact Manager</button>
+          </section>
 
           <!-- Login Activity Log -->
-          <div class="section-box">
+          <section class="section-box">
             <h3>Recent Active Sessions</h3>
             <div class="session-list">
               <div class="session-item">
@@ -368,13 +364,13 @@
                 </div>
               </div>
             </div>
-          </div>
+          </section>
 
         </div>
 
       </div>
 
-    </div>
+    </main>
 
   </div>
 
