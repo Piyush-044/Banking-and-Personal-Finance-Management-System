@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accounts | Banking & Personal Finance Management System</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+      <h2>Apex Banking</h2>
+
+      <div class="menu-label">Main Menu</div>
+      <ul class="menu">
+        <li><a href="index.html">Dashboard</a></li>
+        <li class="active"><a href="accounts.html">Accounts <span class="badge">4</span></a></li>
+        <li><a href="transactions.html">Transactions <span class="badge">6</span></a></li>
+        <li><a href="profile.html">User Profile</a></li>
+      </ul>
+
+      <div class="menu-label">Services</div>
+      <ul class="menu">
+        <li><a href="#">Budgets</a></li>
+        <li><a href="#">Expenses</a></li>
+        <li><a href="#">Reports</a></li>
+      </ul>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      
+      <div class="header">
+        <h1>Accounts Management</h1>
+        <div class="user-info">
+          <a href="profile.html" class="user-link">
+            <span class="user-avatar-sm">PK</span>
+            <span>Welcome, Piyush Kumar</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Account Summary Cards -->
+      <div class="cards-grid">
+        <div class="card">
+          <h3>Everyday Checking</h3>
+          <div style="font-size: 13px; color: #64748b;">ACC •••• 9041</div>
+          <div class="amount" style="margin-top: 10px;">$42,850.00</div>
+        </div>
+        <div class="card">
+          <h3>High-Yield Savings</h3>
+          <div style="font-size: 13px; color: #64748b;">ACC •••• 3312</div>
+          <div class="amount" style="margin-top: 10px; color: #16a34a;">$65,200.00</div>
+        </div>
+        <div class="card">
+          <h3>Platinum Credit Card</h3>
+          <div style="font-size: 13px; color: #64748b;">CARD •••• 8819</div>
+          <div class="amount" style="margin-top: 10px; color: #dc2626;">$2,400.00</div>
+        </div>
+        <div class="card">
+          <h3>Investment Portfolio</h3>
+          <div style="font-size: 13px; color: #64748b;">PORT •••• 7718</div>
+          <div class="amount" style="margin-top: 10px; color: #0284c7;">$22,800.00</div>
+        </div>
+      </div>
+
+      <!-- Open Account Form Section -->
+      <div class="section-box">
+        <h3>Open New Account Form</h3>
+        <form action="accounts.html">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <div class="form-group">
+              <label for="acc-type">Account Type</label>
+              <select id="acc-type" class="form-control">
+                <option>Premier Checking Account</option>
+                <option>High-Yield Savings Account</option>
+                <option>Certificate of Deposit (CD)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="deposit">Initial Deposit Amount ($)</label>
+              <input type="number" id="deposit" class="form-control" placeholder="100.00" required>
+            </div>
+
+            <div class="form-group">
+              <label for="source">Source Account</label>
+              <select id="source" class="form-control">
+                <option>Checking (••9041) - $42,850</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn" style="margin-top: 10px;">Create Account</button>
+        </form>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

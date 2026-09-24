@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banking & Personal Finance Management System</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+      <h2>Apex Banking</h2>
+
+      <div class="menu-label">Main Menu</div>
+      <ul class="menu">
+        <li class="active"><a href="index.html">Dashboard</a></li>
+        <li><a href="accounts.html">Accounts <span class="badge">4</span></a></li>
+        <li><a href="transactions.html">Transactions <span class="badge">6</span></a></li>
+        <li><a href="profile.html">User Profile</a></li>
+      </ul>
+
+      <div class="menu-label">Services</div>
+      <ul class="menu">
+        <li><a href="#">Budgets</a></li>
+        <li><a href="#">Expenses</a></li>
+        <li><a href="#">Reports</a></li>
+      </ul>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      
+      <div class="header">
+        <h1>Dashboard Overview</h1>
+        <div class="user-info">
+          <a href="profile.html" class="user-link">
+            <span class="user-avatar-sm">PK</span>
+            <span>Welcome, Piyush Kumar</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Financial Metric Cards -->
+      <div class="cards-grid">
+        <div class="card">
+          <h3>Total Balance</h3>
+          <div class="amount">$128,450.00</div>
+        </div>
+        <div class="card">
+          <h3>Monthly Income</h3>
+          <div class="amount" style="color: #16a34a;">+$14,250.00</div>
+        </div>
+        <div class="card">
+          <h3>Monthly Expenses</h3>
+          <div class="amount" style="color: #dc2626;">-$4,820.00</div>
+        </div>
+        <div class="card">
+          <h3>Net Savings</h3>
+          <div class="amount" style="color: #0284c7;">$9,430.00</div>
+        </div>
+      </div>
+
+      <!-- Content Grid Split -->
+      <div class="content-grid">
+        
+        <!-- Recent Transactions Table -->
+        <div class="section-box">
+          <h3>Recent Transactions</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>TechCorp Salary</td>
+                <td>Income</td>
+                <td>2026-09-20</td>
+                <td><span class="status-success">Completed</span></td>
+                <td style="color: #16a34a; font-weight: bold;">+$7,500.00</td>
+              </tr>
+              <tr>
+                <td>Apple Store</td>
+                <td>Shopping</td>
+                <td>2026-09-18</td>
+                <td><span class="status-success">Completed</span></td>
+                <td>-$1,299.00</td>
+              </tr>
+              <tr>
+                <td>Electricity Bill</td>
+                <td>Utilities</td>
+                <td>2026-09-15</td>
+                <td><span class="status-pending">Pending</span></td>
+                <td>-$185.50</td>
+              </tr>
+              <tr>
+                <td>Transfer to Sarah</td>
+                <td>Transfer</td>
+                <td>2026-09-12</td>
+                <td><span class="status-success">Completed</span></td>
+                <td>-$650.00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Quick Transfer Form -->
+        <div class="section-box">
+          <h3>Quick Transfer</h3>
+          <form action="transactions.html">
+            <div class="form-group">
+              <label for="acc-from">From Account</label>
+              <select id="acc-from" class="form-control">
+                <option>Checking (••9041) - $42,850</option>
+                <option>Savings (••3312) - $65,200</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="recipient">Recipient Account / UPI</label>
+              <input type="text" id="recipient" class="form-control" placeholder="Enter Account or UPI" required>
+            </div>
+
+            <div class="form-group">
+              <label for="amount">Amount ($)</label>
+              <input type="number" id="amount" class="form-control" placeholder="0.00" required>
+            </div>
+
+            <button type="submit" class="btn" style="width: 100%;">Send Money</button>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

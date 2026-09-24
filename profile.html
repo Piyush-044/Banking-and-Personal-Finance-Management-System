@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile | Banking & Personal Finance Management System</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+      <h2>Apex Banking</h2>
+
+      <div class="menu-label">Main Menu</div>
+      <ul class="menu">
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="accounts.html">Accounts <span class="badge">4</span></a></li>
+        <li><a href="transactions.html">Transactions <span class="badge">6</span></a></li>
+        <li class="active"><a href="profile.html">User Profile</a></li>
+      </ul>
+
+      <div class="menu-label">Services</div>
+      <ul class="menu">
+        <li><a href="#">Budgets</a></li>
+        <li><a href="#">Expenses</a></li>
+        <li><a href="#">Reports</a></li>
+      </ul>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      
+      <!-- Header Area -->
+      <div class="header">
+        <h1>User Profile & Settings</h1>
+        <div class="user-info">
+          <a href="profile.html" class="user-link">
+            <span class="user-avatar-sm">PK</span>
+            <span>Welcome, Piyush Kumar</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Profile Header / Overview Banner Card -->
+      <div class="profile-header-card">
+        <div class="profile-banner-left">
+          <div class="avatar-container">
+            <div class="avatar-circle">PK</div>
+            <button class="avatar-edit-btn" title="Change Profile Picture">📷 Edit</button>
+          </div>
+          <div class="profile-user-details">
+            <h2>Piyush Kumar</h2>
+            <p class="user-email">piyush.kumar@apexbanking.com • Customer ID: <strong style="color: #38bdf8;">APX-984201</strong></p>
+            <div class="badge-group">
+              <span class="badge-tag badge-success">✓ KYC Verified</span>
+              <span class="badge-tag badge-info">Platinum Tier</span>
+              <span class="badge-tag badge-secondary">Member since 2021</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-banner-right">
+          <div class="quick-stat-item">
+            <span class="stat-label">Net Portfolio Value</span>
+            <span class="stat-value">$128,450.00</span>
+          </div>
+          <div class="quick-stat-item">
+            <span class="stat-label">Linked Accounts</span>
+            <span class="stat-value">4 Active</span>
+          </div>
+          <div class="quick-stat-item">
+            <span class="stat-label">Security Health</span>
+            <span class="stat-value" style="color: #10b981;">95% High</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Content Grid Split -->
+      <div class="content-grid">
+        
+        <!-- Left Main Column: Form Sections -->
+        <div class="left-column">
+
+          <!-- Section 1: Personal Details Form -->
+          <div class="section-box">
+            <div class="section-header">
+              <h3>Personal Information</h3>
+              <span class="subtitle">Update your personal account details and address</span>
+            </div>
+            
+            <form action="profile.html" method="GET">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="first-name">First Name</label>
+                  <input type="text" id="first-name" class="form-control" value="Piyush" required>
+                </div>
+                <div class="form-group">
+                  <label for="last-name">Last Name</label>
+                  <input type="text" id="last-name" class="form-control" value="Kumar" required>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="email">Email Address</label>
+                  <input type="email" id="email" class="form-control" value="piyush.kumar@apexbanking.com" required>
+                </div>
+                <div class="form-group">
+                  <label for="phone">Phone Number</label>
+                  <input type="tel" id="phone" class="form-control" value="+1 (555) 234-5678" required>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="dob">Date of Birth</label>
+                  <input type="date" id="dob" class="form-control" value="1995-08-14" required>
+                </div>
+                <div class="form-group">
+                  <label for="gender">Gender</label>
+                  <select id="gender" class="form-control">
+                    <option value="male" selected>Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other / Prefer not to say</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="address">Street Address</label>
+                <input type="text" id="address" class="form-control" value="742 Evergreen Terrace, Suite 4B">
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="city">City</label>
+                  <input type="text" id="city" class="form-control" value="New York">
+                </div>
+                <div class="form-group">
+                  <label for="state">State / Province</label>
+                  <input type="text" id="state" class="form-control" value="NY">
+                </div>
+                <div class="form-group">
+                  <label for="zip">Zip / Postal Code</label>
+                  <input type="text" id="zip" class="form-control" value="10001">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="country">Country</label>
+                  <select id="country" class="form-control">
+                    <option value="US" selected>United States</option>
+                    <option value="IN">India</option>
+                    <option value="CA">Canada</option>
+                    <option value="UK">United Kingdom</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="currency">Preferred Currency</label>
+                  <select id="currency" class="form-control">
+                    <option value="USD" selected>USD ($) - US Dollar</option>
+                    <option value="INR">INR (₹) - Indian Rupee</option>
+                    <option value="EUR">EUR (€) - Euro</option>
+                    <option value="GBP">GBP (£) - British Pound</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn">Save Changes</button>
+                <button type="reset" class="btn btn-secondary">Cancel</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Section 2: Security & Password -->
+          <div class="section-box">
+            <div class="section-header">
+              <h3>Security & Authentication</h3>
+              <span class="subtitle">Manage password, two-factor authentication, and security preferences</span>
+            </div>
+
+            <form action="profile.html" method="GET">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="current-pass">Current Password</label>
+                  <input type="password" id="current-pass" class="form-control" placeholder="••••••••••••">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="new-pass">New Password</label>
+                  <input type="password" id="new-pass" class="form-control" placeholder="Enter new password">
+                </div>
+                <div class="form-group">
+                  <label for="confirm-pass">Confirm New Password</label>
+                  <input type="password" id="confirm-pass" class="form-control" placeholder="Confirm new password">
+                </div>
+              </div>
+
+              <div class="setting-toggle-item">
+                <div class="setting-text">
+                  <strong>Two-Factor Authentication (2FA)</strong>
+                  <p>Require authentication code from Google Authenticator / SMS for sign-in</p>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="setting-toggle-item">
+                <div class="setting-text">
+                  <strong>Biometric Login Support</strong>
+                  <p>Allow fingerprint / Face ID access on supported mobile & desktop browsers</p>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn">Update Security Settings</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Section 3: Notification Preferences -->
+          <div class="section-box">
+            <div class="section-header">
+              <h3>Notification & Alert Preferences</h3>
+              <span class="subtitle">Control how you receive banking statements and security alerts</span>
+            </div>
+
+            <form action="profile.html" method="GET">
+              <div class="preference-group">
+                <label class="checkbox-container">
+                  <input type="checkbox" checked>
+                  <span class="checkmark"></span>
+                  <div class="checkbox-text">
+                    <strong>Transaction Notifications</strong>
+                    <p>Get immediate notifications for purchases over $50.00</p>
+                  </div>
+                </label>
+              </div>
+
+              <div class="preference-group">
+                <label class="checkbox-container">
+                  <input type="checkbox" checked>
+                  <span class="checkmark"></span>
+                  <div class="checkbox-text">
+                    <strong>Security & Login Alerts</strong>
+                    <p>Receive alerts when your account is accessed from a new device or location</p>
+                  </div>
+                </label>
+              </div>
+
+              <div class="preference-group">
+                <label class="checkbox-container">
+                  <input type="checkbox" checked>
+                  <span class="checkmark"></span>
+                  <div class="checkbox-text">
+                    <strong>Monthly E-Statements</strong>
+                    <p>Receive automated monthly PDF statements directly in your email</p>
+                  </div>
+                </label>
+              </div>
+
+              <div class="preference-group">
+                <label class="checkbox-container">
+                  <input type="checkbox">
+                  <span class="checkmark"></span>
+                  <div class="checkbox-text">
+                    <strong>Marketing & Financial Tips</strong>
+                    <p>Receive updates regarding special credit limits and investment insights</p>
+                  </div>
+                </label>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn">Save Preferences</button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Quick Info & Activity -->
+        <div class="right-column">
+
+          <!-- Account Security Health Card -->
+          <div class="section-box">
+            <h3>Security Score</h3>
+            <div class="security-score-wrapper">
+              <div class="score-percentage">95%</div>
+              <div class="score-rating">Security Level: <strong>Strong</strong></div>
+              <div class="meter-bar">
+                <div class="meter-fill" style="width: 95%;"></div>
+              </div>
+            </div>
+            
+            <ul class="security-checklist">
+              <li class="check-item check-pass">✓ Strong Password set</li>
+              <li class="check-item check-pass">✓ 2-Factor Authentication active</li>
+              <li class="check-item check-pass">✓ Verified Mobile Phone</li>
+              <li class="check-item check-pass">✓ Recovery Email confirmed</li>
+            </ul>
+          </div>
+
+          <!-- Relationship & Branch Info -->
+          <div class="section-box">
+            <h3>Banking Manager & Branch</h3>
+            <div class="info-list">
+              <div class="info-item">
+                <span class="info-label">Assigned Branch</span>
+                <span class="info-value">Downtown Plaza Branch</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Branch Code</span>
+                <span class="info-value">APX-NY-0042</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Financial Advisor</span>
+                <span class="info-value">Sarah Jenkins</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Advisor Email</span>
+                <span class="info-value">s.jenkins@apexbanking.com</span>
+              </div>
+            </div>
+            <button class="btn btn-outline" style="width: 100%; margin-top: 15px;">Contact Manager</button>
+          </div>
+
+          <!-- Login Activity Log -->
+          <div class="section-box">
+            <h3>Recent Active Sessions</h3>
+            <div class="session-list">
+              <div class="session-item">
+                <div class="session-icon">💻</div>
+                <div class="session-details">
+                  <strong>Windows PC • Chrome</strong>
+                  <span>New York, USA • IP: 192.168.1.45</span>
+                  <span class="session-time status-success">Active Now</span>
+                </div>
+              </div>
+
+              <div class="session-item">
+                <div class="session-icon">📱</div>
+                <div class="session-details">
+                  <strong>iPhone 15 Pro • Apex App</strong>
+                  <span>New York, USA • Mobile Network</span>
+                  <span class="session-time">Today, 10:15 AM</span>
+                </div>
+              </div>
+
+              <div class="session-item">
+                <div class="session-icon">💻</div>
+                <div class="session-details">
+                  <strong>macOS • Safari Browser</strong>
+                  <span>Boston, USA • IP: 74.125.224.72</span>
+                  <span class="session-time">Yesterday, 06:30 PM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
