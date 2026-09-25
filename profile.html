@@ -16,17 +16,15 @@
 
       <div class="menu-label">Main Menu</div>
       <ul class="menu">
-        <li><a href="#">Dashboard</a></li>
-        <li><a href="#">Accounts <span class="badge">4</span></a></li>
-        <li><a href="#">Transactions <span class="badge">6</span></a></li>
-        <li class="active"><a href="profile.html">User Profile</a></li>
+        <li><a href="index.html">📊 Dashboard</a></li>
+        <li><a href="accounts.html">💳 Accounts <span class="badge">4</span></a></li>
+        <li><a href="transactions.html">🔄 Transactions <span class="badge">6</span></a></li>
+        <li class="active"><a href="profile.html">👤 User Profile</a></li>
       </ul>
 
-      <div class="menu-label">Services</div>
+      <div class="menu-label">Account</div>
       <ul class="menu">
-        <li><a href="#">Budgets</a></li>
-        <li><a href="#">Expenses</a></li>
-        <li><a href="#">Reports</a></li>
+        <li><a href="login.html">🔒 Sign Out</a></li>
       </ul>
     </aside>
 
@@ -373,6 +371,49 @@
     </main>
 
   </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" style="position:fixed;bottom:24px;right:24px;background:#10b981;color:#fff;padding:12px 20px;border-radius:8px;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,0.2);display:none;z-index:9999;transition:all 0.3s ease;">
+    Settings saved successfully!
+  </div>
+
+  <script>
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    }
+
+    // Attach to all forms
+    document.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        showToast('✅ Profile details saved successfully!');
+      });
+    });
+
+    // Avatar edit button
+    const avatarBtn = document.querySelector('.avatar-edit-btn');
+    if (avatarBtn) {
+      avatarBtn.addEventListener('click', () => {
+        const newInitials = prompt('Enter new Avatar Initials (e.g. PK, AM):', 'PK');
+        if (newInitials) {
+          const avatar = document.querySelector('.avatar-circle');
+          if (avatar) avatar.textContent = newInitials.trim().toUpperCase().substring(0, 2);
+          showToast('✅ Profile avatar updated!');
+        }
+      });
+    }
+
+    // Contact manager button
+    const contactBtn = document.querySelector('.btn-outline.btn-full');
+    if (contactBtn) {
+      contactBtn.addEventListener('click', () => {
+        window.location.href = 'mailto:s.jenkins@apexbanking.com?subject=Banking%20Assistance%20Request';
+      });
+    }
+  </script>
 
 </body>
 </html>
