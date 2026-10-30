@@ -79,6 +79,53 @@
     <footer class="auth-footer">
         &copy; 2026 ApexBank Financial Inc. All rights reserved.
     </footer>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
 
+            var form = document.querySelector('form');
+            var passwordInput = document.getElementById('password');
+            var submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+            var passRules = document.querySelector('.pass-rules');
+
+            /* ── Live password strength meter ── */
+            if (passwordInput && passRules) {
+                var meter = document.createElement('div');
+                meter.style.cssText = 'height:6px;border-radius:4px;margin-top:6px;background:#e5e7eb;overflow:hidden;';
+                var fill = document.createElement('div');
+                fill.style.cssText = 'height:100%;width:0%;border-radius:4px;transition:width 0.4s,background 0.4s;';
+                meter.appendChild(fill);
+                passwordInput.parentElement.appendChild(meter);
+
+                passwordInput.addEventListener('input', function () {
+                    var val = this.value;
+                    var score = 0;
+                    if (val.length >= 8) score++;
+                    if (/[A-Z]/.test(val)) score++;
+                    if (/[a-z]/.test(val)) score++;
+                    if (/\d/.test(val)) score++;
+                    if (/[^A-Za-z0-9]/.test(val)) score++;
+                    var labels = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
+                    var bgs = ['', '#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#059669'];
+                    fill.style.width = (score * 20) + '%';
+                    fill.style.background = bgs[score] || '#e5e7eb';
+                    passRules.textContent = score > 0 ? 'Password strength: ' + labels[score] : 'Password must contain at least 8 characters, 1 uppercase, 1 lowercase, and 1 number.';
+                });
+            }
+
+            /* ── Form submit: loading state ── */
+            if (form && submitBtn) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = '⏳ Creating Account…';
+                    showToast('✅ Account registered! Redirecting to login…', 'success');
+                    setTimeout(function () {
+                        window.location.href = 'login.html';
+                    }, 1800);
+                });
+            }
+        });
+    </script>
 </body>
 </html>

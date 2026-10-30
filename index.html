@@ -8,6 +8,7 @@
 </head>
 <body>
 
+    <!-- Main Navigation Header -->
     <header class="main-nav">
         <div class="nav-container">
             <a href="index.html" class="brand">
@@ -23,9 +24,12 @@
                 </ul>
             </nav>
             <div class="nav-user-actions">
+                <button type="button" id="theme-toggle-btn" class="btn-theme-toggle" title="Toggle Theme">
+                    <span>🌙</span> Dark
+                </button>
                 <a href="profile.html" style="text-decoration:none; color:inherit;" title="Go to User Profile">
                     <div class="user-profile-badge">
-                        <div class="user-avatar">AM</div>
+                        <div class="user-avatar" id="nav-avatar">AM</div>
                         <div class="user-info">
                             <span class="user-name">Alex Morgan</span>
                             <span class="user-status">Verified Account</span>
@@ -37,59 +41,481 @@
         </div>
     </header>
 
+    <!-- Main Content Area -->
     <main class="main-content">
 
+        <!-- Page Header & Action Bar -->
         <section class="page-header">
             <div class="page-title-group">
-                <h1><span>📊</span> Dashboard</h1>
-                <p>Welcome back, Alex! Here is your financial overview.</p>
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:6px;">
+                    <h1><span>📊</span> Financial Overview</h1>
+                    <span style="font-size:0.8rem; color:var(--text-muted); background:var(--bg-main); padding:3px 10px; border-radius:6px; border:1px solid var(--border);">
+                        Customer ID: <strong class="customer-id" style="color:var(--text-main);">APX-984201</strong>
+                    </span>
+                </div>
+                <p id="dashboard-greeting">Good Morning, Alex! Here is your banking summary.</p>
             </div>
             <div class="page-actions">
-                <a href="transactions.html" class="btn-primary"><span>💸</span> Send Money</a>
-                <a href="accounts.html" class="btn-secondary"><span>💳</span> Accounts</a>
+                <a href="#quick-send-box" class="btn-primary" id="btn-quick-send-jump">
+                    <span>💸</span> Send Money
+                </a>
+                <a href="transactions.html" class="btn-secondary">
+                    <span>📄</span> Full Statement
+                </a>
             </div>
         </section>
 
+        <!-- Core Financial Metrics Cards (4 Clean Stats) -->
         <section class="stats-grid">
-            <div class="stat-card emerald">
+            <div class="stat-card">
                 <div class="stat-top">
                     <span class="stat-label">Total Net Worth</span>
-                    <div class="stat-icon emerald">💼</div>
+                    <div class="stat-icon blue">💼</div>
                 </div>
                 <div class="stat-value">Rs. 14,85,620</div>
-                <div class="stat-trend trend-up"><span>+8.4%</span> from last month</div>
+                <div class="stat-trend trend-up"><span>+8.4%</span> vs last month</div>
             </div>
-            <div class="stat-card blue">
+
+            <div class="stat-card">
                 <div class="stat-top">
                     <span class="stat-label">Savings Balance</span>
-                    <div class="stat-icon blue">🏦</div>
+                    <div class="stat-icon emerald">🏦</div>
                 </div>
                 <div class="stat-value">Rs. 9,24,300</div>
-                <div class="stat-trend trend-up"><span>7.2% p.a.</span> interest rate</div>
+                <div class="stat-trend trend-up"><span>7.2% APY</span> Interest Active</div>
             </div>
-            <div class="stat-card purple">
+
+            <div class="stat-card">
                 <div class="stat-top">
                     <span class="stat-label">Monthly Spending</span>
                     <div class="stat-icon purple">📤</div>
                 </div>
                 <div class="stat-value">Rs. 38,450</div>
-                <div class="stat-trend trend-down"><span>-12%</span> vs last month</div>
+                <div class="stat-trend trend-down"><span>-12%</span> within budget</div>
             </div>
-            <div class="stat-card amber">
+
+            <div class="stat-card">
                 <div class="stat-top">
-                    <span class="stat-label">Investment Returns</span>
-                    <div class="stat-icon amber">📈</div>
+                    <span class="stat-label">Available Credit Limit</span>
+                    <div class="stat-icon amber">💳</div>
                 </div>
-                <div class="stat-value">Rs. 1,12,840</div>
-                <div class="stat-trend trend-up"><span>+3.1%</span> this quarter</div>
+                <div class="stat-value">Rs. 4,50,000</div>
+                <div class="stat-trend trend-up"><span>Platinum</span> Titanium Limit</div>
             </div>
         </section>
 
+        <!-- Main Dashboard 2-Column Grid Layout: Essential Banking Only -->
+        <div class="dash-grid-layout">
+
+            <!-- LEFT COLUMN: Recent Transactions with live search & filters -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+
+                <section class="dash-card">
+                    <div class="dash-card-header" style="flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;"><span>🔄</span> Recent Transactions</h3>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">Latest debits and credits on your primary accounts.</p>
+                        </div>
+                        <div class="dash-pill-group" id="tx-filter-pills">
+                            <button type="button" class="dash-pill-btn active" data-tx-filter="all">All</button>
+                            <button type="button" class="dash-pill-btn" data-tx-filter="credit">Credits (+)</button>
+                            <button type="button" class="dash-pill-btn" data-tx-filter="debit">Debits (-)</button>
+                        </div>
+                    </div>
+
+                    <!-- Search Input Filter -->
+                    <div style="margin-bottom: 16px;">
+                        <input type="text" id="tx-search-input" class="form-control" placeholder="🔍 Search transactions by description or date..." style="font-size: 0.88rem; padding: 10px 14px;">
+                    </div>
+
+                    <!-- Transactions List -->
+                    <div class="dash-tx-list" id="dashboard-tx-list">
+                        <!-- Transaction 1 -->
+                        <div class="dash-tx-item" data-type="credit">
+                            <div class="dash-tx-left">
+                                <div class="dash-tx-icon" style="background: rgba(16,185,129,0.12); color:#10b981;">💼</div>
+                                <div>
+                                    <div class="dash-tx-title">Apex Tech Global • Monthly Salary</div>
+                                    <div class="dash-tx-meta">Today, 09:30 AM • Direct Deposit (NEFT)</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="dash-tx-amount credit">+₹1,25,000.00</div>
+                                <div class="dash-tx-meta" style="text-align:right;">Completed ✓</div>
+                            </div>
+                        </div>
+
+                        <!-- Transaction 2 -->
+                        <div class="dash-tx-item" data-type="debit">
+                            <div class="dash-tx-left">
+                                <div class="dash-tx-icon" style="background: rgba(37,99,235,0.12); color:#2563eb;">🍎</div>
+                                <div>
+                                    <div class="dash-tx-title">Apple Services • iCloud &amp; Music Subscription</div>
+                                    <div class="dash-tx-meta">Yesterday, 04:15 PM • Recurring Card Payment</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="dash-tx-amount debit">-₹399.00</div>
+                                <div class="dash-tx-meta" style="text-align:right;">Completed ✓</div>
+                            </div>
+                        </div>
+
+                        <!-- Transaction 3 -->
+                        <div class="dash-tx-item" data-type="debit">
+                            <div class="dash-tx-left">
+                                <div class="dash-tx-icon" style="background: rgba(245,158,11,0.12); color:#f59e0b;">🛒</div>
+                                <div>
+                                    <div class="dash-tx-title">Nature's Basket Gourmet Groceries</div>
+                                    <div class="dash-tx-meta">28 Oct 2026 • Card ••4291 POS</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="dash-tx-amount debit">-₹4,820.00</div>
+                                <div class="dash-tx-meta" style="text-align:right;">Completed ✓</div>
+                            </div>
+                        </div>
+
+                        <!-- Transaction 4 -->
+                        <div class="dash-tx-item" data-type="credit">
+                            <div class="dash-tx-left">
+                                <div class="dash-tx-icon" style="background: rgba(16,185,129,0.12); color:#10b981;">📈</div>
+                                <div>
+                                    <div class="dash-tx-title">Zerodha Broking • Quarterly Dividend</div>
+                                    <div class="dash-tx-meta">27 Oct 2026 • Securities Dividend</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="dash-tx-amount credit">+₹6,450.00</div>
+                                <div class="dash-tx-meta" style="text-align:right;">Completed ✓</div>
+                            </div>
+                        </div>
+
+                        <!-- Transaction 5 -->
+                        <div class="dash-tx-item" data-type="debit">
+                            <div class="dash-tx-left">
+                                <div class="dash-tx-icon" style="background: rgba(239,68,68,0.12); color:#ef4444;">⚡</div>
+                                <div>
+                                    <div class="dash-tx-title">Adani Electricity Board • Utility Bill</div>
+                                    <div class="dash-tx-meta">26 Oct 2026 • Auto BBPS Debit</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="dash-tx-amount debit">-₹2,450.00</div>
+                                <div class="dash-tx-meta" style="text-align:right;">Completed ✓</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 18px; text-align: center;">
+                        <a href="transactions.html" class="btn-secondary" style="width: 100%; justify-content: center;">
+                            <span>📜</span> View Full Transaction History
+                        </a>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- RIGHT COLUMN: Quick Money Transfer & Primary Card -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+
+                <!-- Quick Send Money Box -->
+                <section class="dash-card" id="quick-send-box">
+                    <div class="dash-card-header">
+                        <div>
+                            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;"><span>⚡</span> Quick Transfer</h3>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">Instant transfer via UPI or Account Number.</p>
+                        </div>
+                    </div>
+
+                    <!-- Frequent Payee Chips -->
+                    <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px;">Quick Payees:</div>
+                    <div class="quick-payees-scroll">
+                        <button type="button" class="quick-payee-btn selected" data-name="Som Gupta" data-vpa="somgupta@apex">
+                            <div class="quick-payee-avatar" style="background: #2563eb;">SG</div>
+                            <span class="quick-payee-name">Self</span>
+                        </button>
+                        <button type="button" class="quick-payee-btn" data-name="Priya Sharma" data-vpa="priya.s@oksbi">
+                            <div class="quick-payee-avatar" style="background: #059669;">PS</div>
+                            <span class="quick-payee-name">Priya</span>
+                        </button>
+                        <button type="button" class="quick-payee-btn" data-name="Rahul Verma" data-vpa="rahul.v@icici">
+                            <div class="quick-payee-avatar" style="background: #d97706;">RV</div>
+                            <span class="quick-payee-name">Rahul</span>
+                        </button>
+                    </div>
+
+                    <!-- Transfer Form -->
+                    <form id="quick-send-form" class="banking-form" style="margin-top: 14px;">
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label class="form-label" for="quick-recipient" style="font-size:0.8rem;">Recipient (UPI ID or Account)</label>
+                            <input type="text" id="quick-recipient" class="form-control" value="Som Gupta • somgupta@apex" required style="padding: 10px 12px;">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label class="form-label" for="quick-amount" style="font-size:0.8rem;">Amount (₹)</label>
+                            <input type="number" id="quick-amount" class="form-control" placeholder="Enter amount" min="10" max="100000" value="2000" required style="font-size: 1.15rem; font-weight:700; color:var(--primary); padding: 10px 12px;">
+                        </div>
+
+                        <!-- Amount Presets -->
+                        <div class="amount-chips-row" style="margin-bottom: 16px;">
+                            <button type="button" class="chip-btn" data-val="500">₹500</button>
+                            <button type="button" class="chip-btn" data-val="1000">₹1,000</button>
+                            <button type="button" class="chip-btn" data-val="2500">₹2,500</button>
+                            <button type="button" class="chip-btn" data-val="5000">₹5,000</button>
+                        </div>
+
+                        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+                            <span>🚀</span> Send Transfer Now
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Active Primary Card -->
+                <section class="dash-card">
+                    <div class="dash-card-header" style="margin-bottom: 14px;">
+                        <div>
+                            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;"><span>💳</span> Active Primary Card</h3>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">Titanium Debit Card linked to Savings.</p>
+                        </div>
+                        <span style="font-size: 0.72rem; color: #10b981; background: rgba(16,185,129,0.12); padding: 3px 8px; border-radius: 99px; font-weight:700; border:1px solid rgba(16,185,129,0.25);">ACTIVE</span>
+                    </div>
+
+                    <div class="virtual-card-wrap" id="titanium-card-element">
+                        <div class="vcard-top">
+                            <div class="vcard-logo">Apex<span>Bank</span> <small style="font-size:0.65rem; color:#94a3b8; font-weight:normal;">TITANIUM</small></div>
+                            <span style="font-size: 1.2rem;">📶</span>
+                        </div>
+
+                        <div class="vcard-chip-row">
+                            <div class="emv-chip" style="width:34px; height:26px;"></div>
+                            <span style="font-size: 0.72rem; color: #94a3b8; letter-spacing: 1px;">PLATINUM DEBIT</span>
+                        </div>
+
+                        <div class="vcard-number" id="vcard-number-display">•••• •••• •••• 4291</div>
+
+                        <div class="vcard-details-row">
+                            <div>
+                                <div class="vcard-label">CARD HOLDER</div>
+                                <div class="vcard-val card-holder-name" id="vcard-holder-name">ALEX MORGAN</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="vcard-label">EXPIRES / CVV</div>
+                                <div class="vcard-val" id="vcard-cvv-display">08/29 •••</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Actions -->
+                    <div class="vcard-actions" style="margin-top: 14px;">
+                        <button type="button" class="vcard-act-btn" id="btn-toggle-card-details">
+                            <span>👁️</span> <span id="vcard-toggle-text">Show Details</span>
+                        </button>
+                        <button type="button" class="vcard-act-btn" id="btn-freeze-card">
+                            <span>❄️</span> <span id="vcard-freeze-text">Freeze Card</span>
+                        </button>
+                        <a href="accounts.html" class="vcard-act-btn" style="text-decoration:none;">
+                            <span>⚙️</span> Manage
+                        </a>
+                    </div>
+                </section>
+
+            </div>
+
+        </div>
+
     </main>
 
-    <footer style="text-align:center; padding:1rem; color:var(--text-dim); font-size:.8rem; border-top:1px solid var(--border);">
-        &copy; 2026 ApexBank Financial Inc.
+    <!-- Global Application Footer -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 ApexBank Financial Technologies Inc. FDIC &amp; RBI Insured. All rights reserved.</p>
+            <ul class="footer-links">
+                <li><a href="accounts.html">Accounts</a></li>
+                <li><a href="transactions.html">Statements</a></li>
+                <li><a href="profile.html">Profile &amp; Security</a></li>
+            </ul>
+        </div>
     </footer>
 
+    <!-- Shared Utilities & Persistent State -->
+    <script src="js/main.js"></script>
+
+    <!-- Dashboard Interactive Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            /* ── Sync User Profile Greeting & Names ── */
+            var profile = typeof getUserProfile === 'function' ? getUserProfile() : null;
+            if (profile) {
+                var h = new Date().getHours();
+                var greeting = h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening';
+                var greetingEl = document.getElementById('dashboard-greeting');
+                if (greetingEl) {
+                    greetingEl.textContent = greeting + ', ' + (profile.firstName || 'User') + '! Here is your banking summary.';
+                }
+                var vcardHolder = document.getElementById('vcard-holder-name');
+                if (vcardHolder) {
+                    vcardHolder.textContent = (profile.fullName || 'Alex Morgan').toUpperCase();
+                }
+            }
+
+            /* ── Transaction Live Search Filter ── */
+            var searchInput = document.getElementById('tx-search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', function () {
+                    var query = this.value.toLowerCase().trim();
+                    var items = document.querySelectorAll('#dashboard-tx-list .dash-tx-item');
+                    items.forEach(function (item) {
+                        var text = item.textContent.toLowerCase();
+                        if (!query || text.indexOf(query) !== -1) {
+                            item.style.display = 'flex';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            }
+
+            /* ── Transaction Type Filter Tabs ── */
+            var txFilterPills = document.querySelectorAll('#tx-filter-pills .dash-pill-btn');
+            txFilterPills.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    txFilterPills.forEach(function (b) { b.classList.remove('active'); });
+                    this.classList.add('active');
+                    var filter = this.getAttribute('data-tx-filter');
+                    var items = document.querySelectorAll('#dashboard-tx-list .dash-tx-item');
+                    items.forEach(function (item) {
+                        var type = item.getAttribute('data-type');
+                        if (filter === 'all' || type === filter) {
+                            item.style.display = 'flex';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            /* ── Virtual Card Details Toggle (Show/Hide CVV) ── */
+            var btnToggleCard = document.getElementById('btn-toggle-card-details');
+            var isCardRevealed = false;
+            if (btnToggleCard) {
+                btnToggleCard.addEventListener('click', function () {
+                    isCardRevealed = !isCardRevealed;
+                    var numDisplay = document.getElementById('vcard-number-display');
+                    var cvvDisplay = document.getElementById('vcard-cvv-display');
+                    var toggleText = document.getElementById('vcard-toggle-text');
+
+                    if (isCardRevealed) {
+                        numDisplay.textContent = '4532 8921 7734 4291';
+                        cvvDisplay.textContent = '08/29 • 819';
+                        toggleText.textContent = 'Hide Details';
+                        showToast('🔒 Virtual card details revealed. Auto-hides in 15s.', 'info');
+                        setTimeout(function () {
+                            if (isCardRevealed) btnToggleCard.click();
+                        }, 15000);
+                    } else {
+                        numDisplay.textContent = '•••• •••• •••• 4291';
+                        cvvDisplay.textContent = '08/29 •••';
+                        toggleText.textContent = 'Show Details';
+                    }
+                });
+            }
+
+            /* ── Freeze Card Toggle ── */
+            var btnFreeze = document.getElementById('btn-freeze-card');
+            var isCardFrozen = false;
+            if (btnFreeze) {
+                btnFreeze.addEventListener('click', function () {
+                    isCardFrozen = !isCardFrozen;
+                    var cardWrap = document.getElementById('titanium-card-element');
+                    var freezeText = document.getElementById('vcard-freeze-text');
+                    if (isCardFrozen) {
+                        cardWrap.style.filter = 'grayscale(80%) brightness(80%)';
+                        freezeText.textContent = 'Unfreeze Card';
+                        showToast('❄️ Virtual card is FROZEN. Online transactions blocked.', 'warning');
+                    } else {
+                        cardWrap.style.filter = 'none';
+                        freezeText.textContent = 'Freeze Card';
+                        showToast('✅ Virtual card is ACTIVE and unlocked.', 'success');
+                    }
+                });
+            }
+
+            /* ── Quick Payee Avatar Selection ── */
+            var payeeBtns = document.querySelectorAll('.quick-payee-btn');
+            var recipientInput = document.getElementById('quick-recipient');
+            payeeBtns.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    payeeBtns.forEach(function (b) { b.classList.remove('selected'); });
+                    this.classList.add('selected');
+                    var name = this.getAttribute('data-name');
+                    var vpa = this.getAttribute('data-vpa');
+                    if (recipientInput) {
+                        recipientInput.value = name + ' • ' + vpa;
+                    }
+                });
+            });
+
+            /* ── Amount Preset Chips ── */
+            var chipBtns = document.querySelectorAll('.chip-btn');
+            var amountInput = document.getElementById('quick-amount');
+            chipBtns.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    if (amountInput) {
+                        amountInput.value = this.getAttribute('data-val');
+                        amountInput.focus();
+                    }
+                });
+            });
+
+            /* ── Quick Send Money Submit ── */
+            var sendForm = document.getElementById('quick-send-form');
+            if (sendForm) {
+                sendForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    var recipient = recipientInput ? recipientInput.value.trim() : 'Beneficiary';
+                    var amountVal = amountInput ? parseFloat(amountInput.value) : 0;
+                    if (!amountVal || amountVal <= 0) {
+                        showToast('⚠️ Please enter a valid transfer amount.', 'error');
+                        return;
+                    }
+
+                    var submitBtn = sendForm.querySelector('button[type="submit"]');
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span>⏳</span> Processing Transfer…';
+
+                    setTimeout(function () {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<span>🚀</span> Send Transfer Now';
+
+                        // Notification
+                        showToast('✅ Transfer of ₹' + amountVal.toLocaleString('en-IN') + ' sent to ' + recipient + ' successfully!', 'success');
+
+                        // Dynamically append transaction to recent list
+                        var txList = document.getElementById('dashboard-tx-list');
+                        if (txList) {
+                            var newRow = document.createElement('div');
+                            newRow.className = 'dash-tx-item';
+                            newRow.setAttribute('data-type', 'debit');
+                            newRow.innerHTML = 
+                                '<div class="dash-tx-left">' +
+                                    '<div class="dash-tx-icon" style="background: rgba(37,99,235,0.12); color:#2563eb;">💸</div>' +
+                                    '<div>' +
+                                        '<div class="dash-tx-title">Transfer • ' + recipient.split('•')[0].trim() + '</div>' +
+                                        '<div class="dash-tx-meta">Just now • Instant Transfer</div>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div>' +
+                                    '<div class="dash-tx-amount debit">-₹' + amountVal.toLocaleString('en-IN') + '.00</div>' +
+                                    '<div class="dash-tx-meta" style="text-align:right;">Completed ✓</div>' +
+                                '</div>';
+                            txList.insertBefore(newRow, txList.firstChild);
+                        }
+                    }, 650);
+                });
+            }
+
+        });
+    </script>
 </body>
 </html>

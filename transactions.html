@@ -42,6 +42,9 @@
             </nav>
 
             <div class="nav-user-actions">
+                <button type="button" id="theme-toggle-btn" class="btn-theme-toggle" title="Toggle Theme">
+                    <span>🌙</span> Dark
+                </button>
                 <a href="profile.html" style="text-decoration:none; color:inherit;" title="Go to User Profile">
                     <div class="user-profile-badge">
                         <div class="user-avatar">AM</div>
@@ -634,6 +637,92 @@
             <li><a href="login.html">Support Hotline: 1800-APEX-BANK</a></li>
         </ul>
     </footer>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            /* ── Stat cards entrance animation ── */
+            document.querySelectorAll('.stat-card').forEach(function (card, i) {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.45s ease, transform 0.45s ease';
+                setTimeout(function () {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 * i);
+            });
+
+            /* ── Transfer form submit ── */
+            var transferForm = document.querySelector('#transfer-money-form form');
+            if (transferForm) {
+                transferForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    var amtEl = document.getElementById('transfer-amount');
+                    var benEl = document.getElementById('beneficiary-name');
+                    var amount = amtEl ? '₹' + parseFloat(amtEl.value).toLocaleString('en-IN') : '₹0';
+                    var ben = benEl ? benEl.value.trim() : 'Beneficiary';
+                    var btn = transferForm.querySelector('button[type="submit"]');
+                    if (btn) { btn.disabled = true; btn.textContent = '⏳ Processing…'; }
+                    showToast('🔐 OTP sent – transfer of ' + amount + ' to ' + ben + ' pending authorization.', 'info');
+                    setTimeout(function () {
+                        showToast('✅ Transfer of ' + amount + ' to ' + ben + ' completed!', 'success');
+                        if (btn) { btn.disabled = false; btn.innerHTML = '<span>🔒</span> Authorize &amp; Send Transfer'; }
+                        transferForm.reset();
+                    }, 2500);
+                });
+            }
+
+            /* ── Live search filter on transactions table ── */
+            var searchInput = document.getElementById('search-query');
+            var filterForm = document.querySelector('.toolbar-card form');
+            if (filterForm) {
+                filterForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    var query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+                    var account = document.getElementById('filter-account') ? document.getElementById('filter-account').value : 'all';
+                    var category = document.getElementById('filter-category') ? document.getElementById('filter-category').value : 'all';
+                    var status = document.getElementById('filter-status') ? document.getElementById('filter-status').value : 'all';
+                    var rows = document.querySelectorAll('.banking-table tbody tr');
+                    var visible = 0;
+                    rows.forEach(function (row) {
+                        var text = row.textContent.toLowerCase();
+                        var show = (!query || text.includes(query));
+                        row.style.display = show ? '' : 'none';
+                        if (show) visible++;
+                    });
+                    showToast('🔍 ' + visible + ' transaction(s) found.', visible > 0 ? 'info' : 'warning');
+                });
+            }
+
+            /* ── Receipt buttons ── */
+            document.querySelectorAll('.action-link-btn').forEach(function (btn) {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var row = btn.closest('tr');
+                    var txId = row ? row.querySelector('.tx-ref') : null;
+                    var id = txId ? txId.textContent.trim() : 'TXN-XXXXXXX';
+                    showToast('🧾 Downloading receipt for ' + id + '…', 'info');
+                });
+            });
+
+            /* ── Frequent payee "Pay" buttons quick-fill the transfer form ── */
+            var payeeItems = document.querySelectorAll('.toggle-list .toggle-item');
+            payeeItems.forEach(function (item) {
+                var payBtn = item.querySelector('a.btn-secondary');
+                if (!payBtn) return;
+                payBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var nameEl = item.querySelector('.tx-title');
+                    var name = nameEl ? nameEl.textContent.trim() : '';
+                    var benInput = document.getElementById('beneficiary-name');
+                    if (benInput && name) benInput.value = name;
+                    var formSection = document.getElementById('transfer-money-form');
+                    if (formSection) formSection.scrollIntoView({ behavior: 'smooth' });
+                    showToast('💸 Quick-fill: ' + name + ' selected as payee.', 'info');
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>
