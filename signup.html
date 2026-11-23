@@ -33,7 +33,8 @@
                 <form action="login.html" method="GET">
                     <div class="form-group">
                         <label for="fullname" class="form-label">Full Name</label>
-                        <input type="text" id="fullname" name="fullname" class="form-input" placeholder="John Doe" required>
+                        <input type="text" id="fullname" name="fullname" class="form-input" placeholder="John Doe" required pattern="[A-Za-z\s]+" title="Name mein sirf letters allowed hain, numbers nahi">
+                        <div id="name-error" style="color:#ef4444;font-size:12px;margin-top:4px;display:none;">❌ Valid name enter karein (sirf letters, koi number nahi)</div>
                     </div>
 
                     <div class="form-group">
@@ -44,8 +45,7 @@
                     <div class="form-group">
                         <label for="account-type" class="form-label">Account Type</label>
                         <select id="account-type" name="account_type" class="form-select" required>
-                            <option value="checking">Everyday Checking</option>
-                            <option value="savings">High-Yield Savings</option>
+                            <option value="normal">Normal Account</option>
                             <option value="business">Business Account</option>
                         </select>
                     </div>
@@ -87,6 +87,23 @@
             var passwordInput = document.getElementById('password');
             var submitBtn = form ? form.querySelector('button[type="submit"]') : null;
             var passRules = document.querySelector('.pass-rules');
+            var nameInput = document.getElementById('fullname');
+            var nameError = document.getElementById('name-error');
+
+            /* ── Live Name Validation ── */
+            if (nameInput && nameError) {
+                nameInput.addEventListener('input', function () {
+                    var val = this.value;
+                    var isValid = /^[A-Za-z\s]+$/.test(val) && val.trim().length > 0;
+                    if (!isValid && val.length > 0) {
+                        nameInput.style.borderColor = '#ef4444';
+                        nameError.style.display = 'block';
+                    } else {
+                        nameInput.style.borderColor = '';
+                        nameError.style.display = 'none';
+                    }
+                });
+            }
 
             /* ── Live password strength meter ── */
             if (passwordInput && passRules) {
@@ -117,6 +134,16 @@
             if (form && submitBtn) {
                 form.addEventListener('submit', function (e) {
                     e.preventDefault();
+
+                    /* Name validation on submit */
+                    var nameVal = nameInput ? nameInput.value.trim() : '';
+                    if (nameInput && (!/^[A-Za-z\s]+$/.test(nameVal) || nameVal.length === 0)) {
+                        nameInput.style.borderColor = '#ef4444';
+                        nameError.style.display = 'block';
+                        nameInput.focus();
+                        return;
+                    }
+
                     submitBtn.disabled = true;
                     submitBtn.textContent = '⏳ Creating Account…';
                     showToast('✅ Account registered! Redirecting to login…', 'success');
