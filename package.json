@@ -1,0 +1,20 @@
+{
+  "name": "banking-and-personal-finance-management-system",
+  "version": "1.0.0",
+  "description": "ApexBank - Modern Banking and Personal Finance Management System built with HTML5, CSS3, and Node.js",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "banking",
+    "finance",
+    "dashboard",
+    "html5",
+    "css3",
+    "nodejs"
+  ],
+  "author": "ApexBank Team",
+  "license": "ISC"
+}

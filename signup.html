@@ -130,9 +130,9 @@
                 });
             }
 
-            /* ── Form submit: loading state ── */
+            /* ── Form submit: Register new user & set active profile ── */
             if (form && submitBtn) {
-                form.addEventListener('submit', function (e) {
+                form.addEventListener('submit', async function (e) {
                     e.preventDefault();
 
                     /* Name validation on submit */
@@ -144,12 +144,38 @@
                         return;
                     }
 
+                    var emailVal = document.getElementById('email') ? document.getElementById('email').value.trim() : '';
+                    var accTypeVal = document.getElementById('account-type') ? document.getElementById('account-type').value : 'normal';
+                    var passVal = passwordInput ? passwordInput.value : '';
+
                     submitBtn.disabled = true;
                     submitBtn.textContent = '⏳ Creating Account…';
-                    showToast('✅ Account registered! Redirecting to login…', 'success');
+
+                    var userPayload = {
+                        fullName: nameVal,
+                        email: emailVal,
+                        account_type: accTypeVal,
+                        accountType: accTypeVal === 'business' ? 'Business Account' : 'Normal Account',
+                        membershipTier: accTypeVal === 'business' ? 'Private Wealth' : 'Gold Tier',
+                        password: passVal
+                    };
+
+                    // Register on backend DB first so exact user.id + starter cards are persisted before redirect
+                    var newUser = null;
+                    if (window.ApexAPI && typeof window.ApexAPI.register === 'function') {
+                        newUser = await window.ApexAPI.register(userPayload);
+                    }
+                    if (!newUser && typeof registerUser === 'function') {
+                        newUser = registerUser(userPayload, true);
+                        if (typeof loginUser === 'function' && newUser) {
+                            loginUser(newUser.email, passVal, true);
+                        }
+                    }
+
+                    showToast('🎉 Account registered for ' + (newUser ? newUser.fullName : nameVal) + '! Redirecting to Dashboard…', 'success');
                     setTimeout(function () {
-                        window.location.href = 'login.html';
-                    }, 1800);
+                        window.location.href = 'index.html';
+                    }, 700);
                 });
             }
         });

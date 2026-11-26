@@ -285,6 +285,8 @@ body {
     cursor: pointer;
 }
 .form-select option { background: #111827; color: #f9fafb; }
+[data-theme="light"] .form-select option { background: #ffffff; color: #0f172a; }
+[data-theme="light"] .quick-accounts { background: #f8fafc !important; border-color: #cbd5e1 !important; color: #334155 !important; }
 
 /* Form row (checkbox + link) */
 .form-row {

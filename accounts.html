@@ -11,7 +11,7 @@
     <!-- Main Navigation Header -->
     <header class="main-nav">
         <div class="nav-container">
-            <a href="login.html" class="brand">
+            <a href="index.html" class="brand">
                 <span class="brand-icon">🏦</span>
                 <span>Apex<span>Bank</span></span>
             </a>
@@ -421,6 +421,26 @@
                         </div>
                     </div>
 
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="card-type-new" class="form-label">Card Type to Issue</label>
+                            <select id="card-type-new" name="card_type" class="form-select">
+                                <option value="debit" selected>🏦 Platinum Debit Card</option>
+                                <option value="credit">💳 Apex Credit Card</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="card-network-new" class="form-label">Card Network</label>
+                            <select id="card-network-new" name="card_network" class="form-select">
+                                <option value="Visa" selected>💳 Visa</option>
+                                <option value="Mastercard">🔵 Mastercard</option>
+                                <option value="RuPay">🇮🇳 RuPay</option>
+                                <option value="Amex">✦ American Express</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label for="nominee-relation" class="form-label">Nominee Relationship</label>
                         <select id="nominee-relation" name="nominee_relation" class="form-select">
@@ -435,7 +455,7 @@
                     <div class="form-group">
                         <label class="form-checkbox-label">
                             <input type="checkbox" name="debit_card_opt" checked>
-                            <span>Issue an instant virtual contactless Platinum Debit Card for this account.</span>
+                            <span>Issue an instant virtual contactless Card (with Expiry &amp; CVV) for this account.</span>
                         </label>
                     </div>
 
@@ -560,15 +580,144 @@
     </main>
 
     <!-- Global Application Footer -->
+    <!-- ===================== CARD MANAGEMENT MODAL ===================== -->
+    <div class="bank-card-modal-backdrop" id="card-mgmt-modal">
+        <div class="bank-card-modal-box">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <h3 style="font-weight:800;font-size:1.15rem;margin:0;display:flex;align-items:center;gap:8px;">💳 Card &amp; Account Management</h3>
+                <button type="button" id="close-card-modal" style="background:none;border:none;cursor:pointer;font-size:1.35rem;color:var(--text-muted);line-height:1;padding:4px 8px;" title="Close">✕</button>
+            </div>
+
+            <!-- Live Interactive Card Preview -->
+            <div class="bank-card-preview-live skin-debit" id="live-card-preview">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-weight:800;font-size:1rem;letter-spacing:0.5px;">🏦 ApexBank</span>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <span id="preview-type-badge" class="card-type-badge-pill debit">DEBIT CARD</span>
+                        <span id="preview-network" class="card-network-tag">VISA</span>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;margin:10px 0 4px;">
+                    <div class="emv-chip" style="width:36px;height:26px;"></div>
+                    <span style="font-size:1.1rem;opacity:0.85;">📶</span>
+                    <span id="preview-status-pill" style="margin-left:auto;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:999px;background:rgba(16,185,129,0.25);border:1px solid rgba(52,211,153,0.45);">ACTIVE</span>
+                </div>
+                <div>
+                    <div style="font-size:0.62rem;opacity:0.7;letter-spacing:1px;">CARD NUMBER</div>
+                    <div id="preview-number" style="font-size:1.18rem;font-weight:700;letter-spacing:2.5px;font-family:'Courier New',monospace;">•••• •••• •••• ••••</div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;">
+                    <div>
+                        <div style="font-size:0.6rem;opacity:0.7;letter-spacing:1px;">CARD HOLDER</div>
+                        <div id="preview-name" style="font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;">YOUR NAME</div>
+                    </div>
+                    <div>
+                        <div style="font-size:0.6rem;opacity:0.7;letter-spacing:1px;">EXPIRES</div>
+                        <div id="preview-expiry" style="font-size:0.85rem;font-weight:700;font-family:'Courier New',monospace;">MM/YY</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:0.6rem;opacity:0.7;letter-spacing:1px;">CVV</div>
+                        <div id="preview-cvv" style="font-size:0.85rem;font-weight:700;font-family:'Courier New',monospace;">•••</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Form -->
+            <div style="display:flex;flex-direction:column;gap:14px;">
+                <!-- Card Type Chooser (Debit vs Credit) -->
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Select Card Type</label>
+                    <div style="display:flex;gap:12px;margin-top:4px;">
+                        <label class="card-type-radio-pill selected-debit" id="label-debit">
+                            <input type="radio" name="card-type-radio" value="debit" id="radio-debit" style="accent-color:#10b981;"> 🏦 Debit Card
+                        </label>
+                        <label class="card-type-radio-pill" id="label-credit">
+                            <input type="radio" name="card-type-radio" value="credit" id="radio-credit" style="accent-color:#f59e0b;"> 💳 Credit Card
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Card Title & Network -->
+                <div class="form-grid-2">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" for="edit-card-title">Card / Account Label</label>
+                        <input type="text" id="edit-card-title" class="form-control" placeholder="Platinum Debit Card">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" for="edit-card-network">Card Network</label>
+                        <select id="edit-card-network" class="form-select">
+                            <option value="Visa">💳 Visa</option>
+                            <option value="Mastercard">🔵 Mastercard</option>
+                            <option value="RuPay">🇮🇳 RuPay</option>
+                            <option value="Amex">✦ American Express</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Card Number + Quick Generator -->
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" for="edit-card-number">
+                        <span>Card Number</span>
+                        <button type="button" id="btn-gen-real-card" style="background:none;border:none;color:var(--primary);cursor:pointer;font-size:0.78rem;font-weight:700;padding:0;">🎲 Auto-Generate Realistic Card</button>
+                    </label>
+                    <input type="text" id="edit-card-number" class="form-control" placeholder="4532 1234 5678 9012" maxlength="23" style="font-family:'Courier New',monospace;letter-spacing:1.2px;font-weight:700;">
+                </div>
+
+                <!-- Expiry & CVV row -->
+                <div class="form-grid-2">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" for="edit-card-expiry">Expiry Date (MM/YY)</label>
+                        <input type="text" id="edit-card-expiry" class="form-control" placeholder="08/29" maxlength="5" style="font-family:'Courier New',monospace;font-weight:700;">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" for="edit-card-cvv">CVV <span class="helper">(3-4 digits)</span></label>
+                        <div style="position:relative;">
+                            <input type="password" id="edit-card-cvv" class="form-control" placeholder="•••" maxlength="4" style="padding-right:40px;font-family:'Courier New',monospace;font-weight:700;">
+                            <button type="button" id="toggle-cvv-eye" title="Show / Hide CVV" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1rem;line-height:1;padding:2px;">👁</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cardholder Name & Card Status -->
+                <div class="form-grid-2">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" for="edit-card-holdername">Cardholder Name</label>
+                        <input type="text" id="edit-card-holdername" class="form-control" placeholder="YOUR NAME" style="text-transform:uppercase;letter-spacing:0.8px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" for="edit-card-status">Card Status</label>
+                        <select id="edit-card-status" class="form-select">
+                            <option value="Active">✅ Active</option>
+                            <option value="Frozen">❄️ Frozen (Temporarily Locked)</option>
+                            <option value="Locked">🔒 Term Locked</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Credit Limit (shown only for Credit Cards) -->
+                <div class="form-group" id="credit-limit-group" style="display:none;margin-bottom:0;">
+                    <label class="form-label" for="edit-credit-limit">Total Credit Limit (₹)</label>
+                    <input type="number" id="edit-credit-limit" class="form-control" placeholder="500000" min="10000" step="5000">
+                </div>
+
+                <!-- Save Button -->
+                <button type="button" id="save-card-details-btn" class="btn-primary" style="width:100%;margin-top:6px;justify-content:center;">
+                    <span>💾</span> Save Card Details to Database
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Application Footer -->
     <footer class="main-footer">
         <div>
             &copy; 2026 ApexBank Financial Inc. FDIC & RBI Insured. All rights reserved.
         </div>
         <ul class="footer-links">
-            <li><a href="login.html">Privacy Policy</a></li>
-            <li><a href="login.html">Terms of Service</a></li>
-            <li><a href="login.html">Security Guidelines</a></li>
-            <li><a href="login.html">Support Hotline: 1800-APEX-BANK</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Security Guidelines</a></li>
+            <li><a href="#">Support Hotline: 1800-APEX-BANK</a></li>
         </ul>
     </footer>
     <script src="js/main.js"></script>
@@ -609,38 +758,530 @@
                 });
             });
 
+            /* ── Shared Helpers ── */
+            var esc = typeof escapeHTML === 'function' ? escapeHTML : function (s) { return String(s || ''); };
+            var cachedAccounts = [];
+            var currentEditAccId = null;
+            var modal = document.getElementById('card-mgmt-modal');
+            var cvvRevealedInModal = false;
+
+            function maskCardDisplay(num, revealed) {
+                var raw = String(num || '4532 0000 0000 0000').trim();
+                if (revealed) return raw;
+                var digits = raw.replace(/[^\d•*]/g, '');
+                var last4 = digits.slice(-4) || '0000';
+                var first4 = raw.split(/\s+/)[0] || digits.slice(0, 4) || '4532';
+                return first4 + ' •••• •••• ' + last4;
+            }
+
+            function getCardSkinClass(acc) {
+                var cardType = (acc.cardType || '').toLowerCase();
+                var accType = (acc.accountType || '').toLowerCase();
+                if (cardType === 'credit' || accType === 'credit') return 'skin-credit';
+                if (accType === 'savings') return 'skin-savings';
+                if (accType === 'investment' || accType === 'fd') return 'skin-investment';
+                return 'skin-checking';
+            }
+
+            /* ── Render Dynamic Cards from Database ── */
+            function renderAccountCards(accounts, profile) {
+                var grid = document.querySelector('.accounts-grid');
+                if (!grid || !accounts || !accounts.length) return;
+
+                var countPill = document.querySelector('.section-title .category-pill');
+                if (countPill) countPill.textContent = accounts.length + ' Linked Account' + (accounts.length === 1 ? '' : 's');
+
+                grid.innerHTML = '';
+                var holderFallback = (profile && profile.fullName ? profile.fullName : 'APEX USER').toUpperCase();
+
+                accounts.forEach(function (acc) {
+                    var cardType = (acc.cardType || (acc.accountType === 'credit' ? 'credit' : 'debit')).toLowerCase();
+                    var cardNetwork = acc.cardNetwork || (cardType === 'credit' ? 'Mastercard' : 'Visa');
+                    var expiry = acc.expiry || '08/29';
+                    var cvv = acc.cvv || '819';
+                    var holder = (acc.cardholderName || holderFallback).toUpperCase();
+                    var skin = getCardSkinClass(acc);
+                    var isCredit = cardType === 'credit';
+                    var isFrozen = String(acc.status || '').toLowerCase() === 'frozen';
+                    var isLocked = String(acc.status || '').toLowerCase() === 'locked';
+                    var bal = parseFloat(acc.balance) || 0;
+                    var limit = parseFloat(acc.creditLimit) || 250000;
+                    var used = bal < 0 ? Math.abs(bal) : 0;
+                    var availCredit = Math.max(0, limit - used);
+
+                    var statusBadgeClass = isFrozen ? 'inactive' : isLocked ? 'locked' : 'active';
+                    var statusText = isFrozen ? 'Frozen' : (acc.status || 'Active');
+
+                    var balanceTitle = isCredit ? 'Available Credit' : 'Available Balance';
+                    var balanceDisplay = isCredit
+                        ? '₹' + availCredit.toLocaleString('en-IN') + '.00'
+                        : '₹' + bal.toLocaleString('en-IN') + '.00';
+
+                    var metaHtml = isCredit
+                        ? '<div class="meta-item"><span>Card Category</span><strong>💳 Credit Card (' + esc(cardNetwork) + ')</strong></div>' +
+                          '<div class="meta-item"><span>Total Credit Limit</span><strong>₹' + limit.toLocaleString('en-IN') + '.00</strong></div>' +
+                          '<div class="meta-item"><span>Current Outstanding</span><strong style="color:#f87171;">₹' + used.toLocaleString('en-IN') + '.00</strong></div>' +
+                          '<div class="meta-item"><span>Status</span><span class="badge-status ' + statusBadgeClass + '">' + esc(statusText) + '</span></div>'
+                        : '<div class="meta-item"><span>Card Category</span><strong>🏦 Debit Card (' + esc(cardNetwork) + ')</strong></div>' +
+                          '<div class="meta-item"><span>Account Title</span><strong>' + esc(acc.title || 'Bank Account') + '</strong></div>' +
+                          '<div class="meta-item"><span>Account ID</span><strong>' + esc(String(acc.id || '').toUpperCase()) + '</strong></div>' +
+                          '<div class="meta-item"><span>Account Status</span><span class="badge-status ' + statusBadgeClass + '">' + esc(statusText) + '</span></div>';
+
+                    var box = document.createElement('div');
+                    box.className = 'account-card-box';
+                    box.setAttribute('data-account-id', acc.id);
+                    box.innerHTML =
+                        '<div class="virtual-card-skin ' + skin + (isFrozen ? ' frozen-card' : '') + '" title="Click to manage card type, number, expiry & CVV">' +
+                            '<div class="card-top-row">' +
+                                '<span class="card-bank-brand">🏦 ApexBank</span>' +
+                                '<div style="display:flex;align-items:center;gap:6px;">' +
+                                    '<span class="card-type-badge-pill ' + cardType + '">' + (isCredit ? 'CREDIT CARD' : 'DEBIT CARD') + '</span>' +
+                                    '<span class="card-network-tag">' + esc(cardNetwork) + '</span>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="card-chip-container">' +
+                                '<div class="emv-chip"></div>' +
+                                '<span class="contactless-wave">' + (isFrozen ? '❄️ FROZEN' : '📶') + '</span>' +
+                                '<button type="button" class="card-cvv-toggle-btn btn-peek-card" style="margin-left:auto;" title="Show / Hide Full Number & CVV">👁 View Details</button>' +
+                            '</div>' +
+                            '<div class="card-account-number" data-revealed="0">' + esc(maskCardDisplay(acc.accountNumber, false)) + '</div>' +
+                            '<div class="card-bottom-row">' +
+                                '<div>' +
+                                    '<div style="font-size:0.62rem;opacity:0.65;">CARD HOLDER</div>' +
+                                    '<span class="card-holder-name">' + esc(holder) + '</span>' +
+                                '</div>' +
+                                '<div>' +
+                                    '<div style="font-size:0.62rem;opacity:0.65;">EXPIRES</div>' +
+                                    '<span class="card-expiry">EXP ' + esc(expiry) + '</span>' +
+                                '</div>' +
+                                '<div style="text-align:right;">' +
+                                    '<div style="font-size:0.62rem;opacity:0.65;">CVV</div>' +
+                                    '<span class="card-cvv-val" style="font-family:monospace;font-weight:700;">•••</span>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="account-card-body">' +
+                            '<div class="balance-box">' +
+                                '<span class="balance-title">' + balanceTitle + '</span>' +
+                                '<span class="balance-amount">' + balanceDisplay + '</span>' +
+                            '</div>' +
+                            '<div class="account-meta-list">' + metaHtml + '</div>' +
+                            '<div class="account-card-actions">' +
+                                '<button type="button" class="btn-primary btn-manage-card">⚙️ Manage Card</button>' +
+                                '<a href="transactions.html" class="btn-secondary">Transfer</a>' +
+                                '<button type="button" class="btn-secondary btn-freeze-acc">' + (isFrozen ? '🔓 Unfreeze' : '❄️ Freeze') + '</button>' +
+                            '</div>' +
+                        '</div>';
+
+                    // Peek CVV + full Card Number without opening modal
+                    var peekBtn = box.querySelector('.btn-peek-card');
+                    if (peekBtn) {
+                        peekBtn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            var numEl = box.querySelector('.card-account-number');
+                            var cvvEl = box.querySelector('.card-cvv-val');
+                            var isShown = numEl.getAttribute('data-revealed') === '1';
+                            if (isShown) {
+                                numEl.setAttribute('data-revealed', '0');
+                                numEl.textContent = maskCardDisplay(acc.accountNumber, false);
+                                cvvEl.textContent = '•••';
+                                peekBtn.textContent = '👁 View Details';
+                            } else {
+                                numEl.setAttribute('data-revealed', '1');
+                                numEl.textContent = acc.accountNumber || '••••';
+                                cvvEl.textContent = cvv;
+                                peekBtn.textContent = '🙈 Hide';
+                                showToast('🔒 Showing Card Number & CVV for 15s.', 'info');
+                            }
+                        });
+                    }
+
+                    // Click card face or Manage button -> open Card Management Modal
+                    box.querySelector('.virtual-card-skin').addEventListener('click', function () {
+                        openCardModal(acc);
+                    });
+                    box.querySelector('.btn-manage-card').addEventListener('click', function () {
+                        openCardModal(acc);
+                    });
+
+                    // Quick Freeze / Unfreeze button persisted to DB
+                    box.querySelector('.btn-freeze-acc').addEventListener('click', function () {
+                        var nextStatus = isFrozen ? 'Active' : 'Frozen';
+                        var btn = this;
+                        btn.disabled = true;
+                        if (window.ApexAPI && typeof window.ApexAPI.updateAccount === 'function') {
+                            window.ApexAPI.updateAccount({ id: acc.id, status: nextStatus }).then(function (res) {
+                                btn.disabled = false;
+                                if (res && res.success) {
+                                    showToast(nextStatus === 'Frozen' ? '❄️ Card frozen and saved to database!' : '✅ Card unfrozen and active!', nextStatus === 'Frozen' ? 'warning' : 'success');
+                                    loadUserAccounts();
+                                }
+                            });
+                        }
+                    });
+
+                    grid.appendChild(box);
+                });
+            }
+
+            /* ── Update KPI Stat Cards & Asset Allocation from Live Accounts ── */
+            function updateAccountStats(accounts) {
+                if (!accounts || !accounts.length) return;
+
+                var checkingAcc = accounts.find(function (a) { return a.accountType === 'checking'; });
+                var savingsAcc = accounts.find(function (a) { return a.accountType === 'savings'; });
+                var creditAccs = accounts.filter(function (a) { return a.accountType === 'credit' || a.cardType === 'credit'; });
+                var investAccs = accounts.filter(function (a) { return a.accountType === 'investment' || a.accountType === 'fd'; });
+
+                var totalNet = accounts.reduce(function (sum, a) { return sum + (parseFloat(a.balance) || 0); }, 0);
+                var checkingSum = accounts.filter(function (a) { return a.accountType === 'checking'; }).reduce(function (s, a) { return s + (parseFloat(a.balance) || 0); }, 0);
+                var savingsSum = accounts.filter(function (a) { return a.accountType === 'savings'; }).reduce(function (s, a) { return s + (parseFloat(a.balance) || 0); }, 0);
+                var investSum = investAccs.reduce(function (s, a) { return s + (parseFloat(a.balance) || 0); }, 0);
+                var availCreditSum = creditAccs.reduce(function (s, a) {
+                    var lim = parseFloat(a.creditLimit) || 250000;
+                    var used = (parseFloat(a.balance) || 0) < 0 ? Math.abs(parseFloat(a.balance)) : 0;
+                    return s + Math.max(0, lim - used);
+                }, 0);
+
+                var statCards = document.querySelectorAll('.stats-grid .stat-card');
+                if (statCards[0]) {
+                    var v0 = statCards[0].querySelector('.stat-value');
+                    if (v0) v0.textContent = '₹' + totalNet.toLocaleString('en-IN') + '.00';
+                }
+                if (statCards[1]) {
+                    var v1 = statCards[1].querySelector('.stat-value');
+                    if (v1) v1.textContent = '₹' + checkingSum.toLocaleString('en-IN') + '.00';
+                    var t1 = statCards[1].querySelector('.stat-trend');
+                    if (t1 && checkingAcc) t1.innerHTML = '<span>• ' + esc(checkingAcc.status || 'Active') + '</span> (Card: *' + esc(String(checkingAcc.accountNumber || '').slice(-4)) + ')';
+                }
+                if (statCards[2]) {
+                    var v2 = statCards[2].querySelector('.stat-value');
+                    if (v2) v2.textContent = '₹' + savingsSum.toLocaleString('en-IN') + '.00';
+                    var t2 = statCards[2].querySelector('.stat-trend');
+                    if (t2 && savingsAcc) t2.innerHTML = '<span>▲ 4.5% APY</span> (' + esc(savingsAcc.cardNetwork || 'Savings') + ')';
+                }
+                if (statCards[3]) {
+                    var l3 = statCards[3].querySelector('.stat-label');
+                    var v3 = statCards[3].querySelector('.stat-value');
+                    var t3 = statCards[3].querySelector('.stat-trend');
+                    if (creditAccs.length > 0 && investSum === 0) {
+                        if (l3) l3.textContent = 'Available Credit Limit';
+                        if (v3) v3.textContent = '₹' + availCreditSum.toLocaleString('en-IN') + '.00';
+                        if (t3) t3.innerHTML = '<span>💳 Credit Line</span> Active';
+                    } else {
+                        if (v3) v3.textContent = '₹' + investSum.toLocaleString('en-IN') + '.00';
+                    }
+                }
+
+                // Update Funding Source dropdown in Open New Account Form
+                var fundSelect = document.getElementById('funding-source');
+                if (fundSelect) {
+                    fundSelect.innerHTML = '';
+                    accounts.filter(function (a) { return a.cardType !== 'credit' && a.accountType !== 'credit'; }).forEach(function (a) {
+                        var opt = document.createElement('option');
+                        opt.value = a.id;
+                        opt.textContent = a.title + ' (₹' + (parseFloat(a.balance) || 0).toLocaleString('en-IN') + '.00)';
+                        fundSelect.appendChild(opt);
+                    });
+                    var extOpt = document.createElement('option');
+                    extOpt.value = 'external';
+                    extOpt.textContent = 'External Bank UPI / IMPS';
+                    fundSelect.appendChild(extOpt);
+                }
+
+                // Update Asset Allocation Bars dynamically
+                var assetTotal = Math.max(1, savingsSum + checkingSum + investSum);
+                var barItems = document.querySelectorAll('.asset-bar-item');
+                var allocData = [
+                    { label: 'High-Yield Savings', amt: savingsSum },
+                    { label: 'Everyday Checking', amt: checkingSum },
+                    { label: 'Investments & FD', amt: investSum }
+                ];
+                barItems.forEach(function (item, idx) {
+                    var d = allocData[idx];
+                    if (!d) return;
+                    var pct = Math.round((d.amt / assetTotal) * 100);
+                    var spans = item.querySelectorAll('.asset-bar-label span');
+                    if (spans[0]) spans[0].textContent = d.label;
+                    if (spans[1]) spans[1].textContent = pct + '% (₹' + (d.amt / 100000).toFixed(2) + 'L)';
+                    var fill = item.querySelector('.asset-bar-fill');
+                    if (fill) fill.style.width = pct + '%';
+                });
+            }
+
+            /* ── Dynamic Live Accounts Loader ── */
+            function loadUserAccounts() {
+                var profile = typeof getUserProfile === 'function' ? getUserProfile() : null;
+                if (!profile) return;
+
+                if (window.ApexAPI && typeof window.ApexAPI.getAccounts === 'function') {
+                    window.ApexAPI.getAccounts(profile.id || profile.email).then(function (accounts) {
+                        if (!accounts || !accounts.length) return;
+                        cachedAccounts = accounts;
+                        updateAccountStats(accounts);
+                        renderAccountCards(accounts, profile);
+                    });
+                }
+            }
+
+            /* ── Real Bank Card Management Modal Logic ── */
+            function updateRadioPillStyles(typeVal) {
+                var lblDebit = document.getElementById('label-debit');
+                var lblCredit = document.getElementById('label-credit');
+                if (lblDebit) lblDebit.classList.toggle('selected-debit', typeVal === 'debit');
+                if (lblCredit) lblCredit.classList.toggle('selected-credit', typeVal === 'credit');
+                var limitGroup = document.getElementById('credit-limit-group');
+                if (limitGroup) limitGroup.style.display = typeVal === 'credit' ? 'block' : 'none';
+            }
+
+            function updateLivePreview() {
+                var num = document.getElementById('edit-card-number').value.trim() || '•••• •••• •••• ••••';
+                var exp = document.getElementById('edit-card-expiry').value.trim() || 'MM/YY';
+                var rawCvv = document.getElementById('edit-card-cvv').value.trim();
+                var holder = (document.getElementById('edit-card-holdername').value.trim() || 'YOUR NAME').toUpperCase();
+                var net = document.getElementById('edit-card-network').value || 'VISA';
+                var statusVal = document.getElementById('edit-card-status').value || 'Active';
+                var checkedRadio = document.querySelector('input[name="card-type-radio"]:checked');
+                var cardType = checkedRadio ? checkedRadio.value : 'debit';
+
+                document.getElementById('preview-number').textContent = num;
+                document.getElementById('preview-expiry').textContent = exp;
+                document.getElementById('preview-cvv').textContent = cvvRevealedInModal ? (rawCvv || '•••') : (rawCvv ? '•'.repeat(rawCvv.length) : '•••');
+                document.getElementById('preview-name').textContent = holder;
+                document.getElementById('preview-network').textContent = net.toUpperCase();
+
+                var badge = document.getElementById('preview-type-badge');
+                badge.textContent = cardType === 'credit' ? 'CREDIT CARD' : 'DEBIT CARD';
+                badge.className = 'card-type-badge-pill ' + cardType;
+
+                var statusPill = document.getElementById('preview-status-pill');
+                if (statusPill) {
+                    statusPill.textContent = statusVal.toUpperCase();
+                    statusPill.style.background = statusVal === 'Frozen' ? 'rgba(239,68,68,0.35)' : 'rgba(16,185,129,0.25)';
+                }
+
+                var preview = document.getElementById('live-card-preview');
+                preview.className = 'bank-card-preview-live skin-' + (cardType === 'credit' ? 'credit' : 'debit');
+                preview.style.filter = statusVal === 'Frozen' ? 'grayscale(85%) brightness(0.75)' : 'none';
+            }
+
+            function openCardModal(acc) {
+                if (!acc || !modal) return;
+                currentEditAccId = acc.id || null;
+                cvvRevealedInModal = false;
+                var profile = typeof getUserProfile === 'function' ? getUserProfile() : null;
+                var holderDefault = profile && profile.fullName ? profile.fullName : 'YOUR NAME';
+
+                document.getElementById('edit-card-title').value = acc.title || '';
+                document.getElementById('edit-card-number').value = acc.accountNumber || '';
+                document.getElementById('edit-card-expiry').value = acc.expiry || '08/29';
+                var cvvInput = document.getElementById('edit-card-cvv');
+                cvvInput.type = 'password';
+                cvvInput.value = acc.cvv || '819';
+                document.getElementById('toggle-cvv-eye').textContent = '👁';
+                document.getElementById('edit-card-holdername').value = (acc.cardholderName || holderDefault).toUpperCase();
+                document.getElementById('edit-credit-limit').value = acc.creditLimit || 300000;
+                document.getElementById('edit-card-network').value = acc.cardNetwork || 'Visa';
+                document.getElementById('edit-card-status').value = acc.status || 'Active';
+
+                var cardType = (acc.cardType || (acc.accountType === 'credit' ? 'credit' : 'debit')).toLowerCase() === 'credit' ? 'credit' : 'debit';
+                document.getElementById('radio-' + cardType).checked = true;
+                updateRadioPillStyles(cardType);
+                updateLivePreview();
+                modal.classList.add('open');
+            }
+
+            // Format Card Number nicely into groups of 4 while typing digits
+            var numInput = document.getElementById('edit-card-number');
+            if (numInput) {
+                numInput.addEventListener('input', function () {
+                    var val = this.value;
+                    if (!val.includes('•')) {
+                        var digits = val.replace(/\D/g, '').substring(0, 16);
+                        this.value = digits.replace(/(\d{4})(?=\d)/g, '$1 ');
+                    }
+                    updateLivePreview();
+                });
+            }
+
+            // Auto-format Expiry as MM/YY
+            var expInput = document.getElementById('edit-card-expiry');
+            if (expInput) {
+                expInput.addEventListener('input', function () {
+                    var digits = this.value.replace(/\D/g, '').substring(0, 4);
+                    if (digits.length >= 3) {
+                        this.value = digits.substring(0, 2) + '/' + digits.substring(2);
+                    } else {
+                        this.value = digits;
+                    }
+                    updateLivePreview();
+                });
+            }
+
+            // Restrict CVV to digits only & live update
+            var cvvEl = document.getElementById('edit-card-cvv');
+            if (cvvEl) {
+                cvvEl.addEventListener('input', function () {
+                    this.value = this.value.replace(/\D/g, '').substring(0, 4);
+                    updateLivePreview();
+                });
+            }
+
+            ['edit-card-holdername', 'edit-card-network', 'edit-card-status'].forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('input', updateLivePreview);
+                    el.addEventListener('change', updateLivePreview);
+                }
+            });
+
+            document.querySelectorAll('input[name="card-type-radio"]').forEach(function (r) {
+                r.addEventListener('change', function () {
+                    updateRadioPillStyles(this.value);
+                    updateLivePreview();
+                });
+            });
+
+            document.getElementById('toggle-cvv-eye').addEventListener('click', function () {
+                cvvRevealedInModal = !cvvRevealedInModal;
+                cvvEl.type = cvvRevealedInModal ? 'text' : 'password';
+                this.textContent = cvvRevealedInModal ? '🙈' : '👁';
+                updateLivePreview();
+            });
+
+            document.getElementById('btn-gen-real-card').addEventListener('click', function () {
+                var net = document.getElementById('edit-card-network').value || 'Visa';
+                var prefix = net === 'Mastercard' ? '5412' : net === 'RuPay' ? '6011' : net === 'Amex' ? '3782' : '4532';
+                var rand4 = function () { return String(Math.floor(1000 + Math.random() * 9000)); };
+                document.getElementById('edit-card-number').value = prefix + ' ' + rand4() + ' ' + rand4() + ' ' + rand4();
+                var mm = String(Math.floor(1 + Math.random() * 12)).padStart(2, '0');
+                var yy = String(28 + Math.floor(Math.random() * 5));
+                document.getElementById('edit-card-expiry').value = mm + '/' + yy;
+                document.getElementById('edit-card-cvv').value = net === 'Amex' ? rand4() : String(Math.floor(100 + Math.random() * 900));
+                updateLivePreview();
+                showToast('🎲 Generated realistic ' + net + ' card number, expiry & CVV!', 'info');
+            });
+
+            document.getElementById('close-card-modal').addEventListener('click', function () {
+                modal.classList.remove('open');
+            });
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) modal.classList.remove('open');
+            });
+
+            document.getElementById('save-card-details-btn').addEventListener('click', function () {
+                var btn = this;
+                var cardNum = document.getElementById('edit-card-number').value.trim();
+                var expiry = document.getElementById('edit-card-expiry').value.trim();
+                var cvv = document.getElementById('edit-card-cvv').value.trim();
+                var holderName = document.getElementById('edit-card-holdername').value.trim().toUpperCase();
+                var cardTitle = document.getElementById('edit-card-title').value.trim();
+                var cardNetwork = document.getElementById('edit-card-network').value;
+                var cardStatus = document.getElementById('edit-card-status').value;
+                var cardTypeRadio = document.querySelector('input[name="card-type-radio"]:checked');
+                var cardTypeVal = cardTypeRadio ? cardTypeRadio.value : 'debit';
+                var creditLimitVal = parseFloat(document.getElementById('edit-credit-limit').value);
+
+                // Validate card fields cleanly
+                if (cardNum.length < 12) {
+                    showToast('⚠️ Please enter a valid card number (13-16 digits).', 'warning');
+                    return;
+                }
+                if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) {
+                    showToast('⚠️ Expiry Date must be in MM/YY format (e.g. 08/29).', 'warning');
+                    return;
+                }
+                if (!/^\d{3,4}$/.test(cvv)) {
+                    showToast('⚠️ CVV must be 3 or 4 digits.', 'warning');
+                    return;
+                }
+                if (!holderName || !/^[A-Za-z\s]+$/.test(holderName)) {
+                    showToast('⚠️ Cardholder Name should contain only letters and spaces.', 'warning');
+                    return;
+                }
+
+                btn.disabled = true;
+                btn.textContent = '⏳ Saving to Database…';
+
+                var payload = {
+                    id: currentEditAccId,
+                    title: cardTitle || undefined,
+                    accountNumber: cardNum,
+                    expiry: expiry,
+                    cvv: cvv,
+                    cardholderName: holderName,
+                    cardNetwork: cardNetwork,
+                    cardType: cardTypeVal,
+                    status: cardStatus,
+                    creditLimit: cardTypeVal === 'credit' && !isNaN(creditLimitVal) ? creditLimitVal : undefined
+                };
+
+                if (window.ApexAPI && typeof window.ApexAPI.updateAccount === 'function') {
+                    window.ApexAPI.updateAccount(payload).then(function (res) {
+                        btn.disabled = false;
+                        btn.innerHTML = '<span>💾</span> Save Card Details to Database';
+                        if (res && res.success) {
+                            showToast('✅ Card details (Type, Number, Expiry, CVV) saved to database.json!', 'success');
+                            modal.classList.remove('open');
+                            loadUserAccounts();
+                        } else {
+                            showToast('⚠️ Failed to sync with server: ' + ((res && res.error) || 'Unknown error'), 'error');
+                        }
+                    });
+                } else {
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>💾</span> Save Card Details to Database';
+                    modal.classList.remove('open');
+                }
+            });
+
             /* ── Open Account form submit ── */
             var accForm = document.querySelector('#open-account-form form');
             if (accForm) {
                 accForm.addEventListener('submit', function (e) {
                     e.preventDefault();
-                    var accType = document.getElementById('acc-type');
-                    var typeText = accType ? accType.options[accType.selectedIndex].text : 'New Account';
+                    var accTypeEl = document.getElementById('acc-type');
+                    var typeVal = accTypeEl ? accTypeEl.value : 'savings';
+                    var typeText = accTypeEl ? accTypeEl.options[accTypeEl.selectedIndex].text : 'New Account';
+                    var depositEl = document.getElementById('deposit-amount');
+                    var depositVal = depositEl ? parseFloat(depositEl.value) : 10000;
+                    var currencyEl = document.getElementById('currency');
+                    var branchEl = document.getElementById('branch-office');
+                    var nomineeEl = document.getElementById('nominee-name');
+                    var nomineeRelEl = document.getElementById('nominee-relation');
+                    var cardTypeNewEl = document.getElementById('card-type-new');
+                    var cardNetNewEl = document.getElementById('card-network-new');
+
                     var btn = accForm.querySelector('button[type="submit"]');
-                    if (btn) { btn.disabled = true; btn.textContent = '⏳ Submitting…'; }
-                    showToast('✅ Application submitted for: ' + typeText, 'success');
-                    setTimeout(function () {
-                        if (btn) { btn.disabled = false; btn.innerHTML = '<span>🚀</span> Submit Account Application'; }
-                        accForm.reset();
-                    }, 2500);
+                    if (btn) { btn.disabled = true; btn.textContent = '⏳ Opening Account…'; }
+
+                    if (window.ApexAPI && typeof window.ApexAPI.openAccount === 'function') {
+                        window.ApexAPI.openAccount({
+                            accountType: typeVal,
+                            title: typeText,
+                            initialDeposit: !isNaN(depositVal) ? depositVal : 10000,
+                            currency: currencyEl ? currencyEl.value : 'INR',
+                            branch: branchEl ? branchEl.value : 'digital',
+                            nomineeName: nomineeEl ? nomineeEl.value.trim() : '',
+                            nomineeRelation: nomineeRelEl ? nomineeRelEl.value : '',
+                            cardType: cardTypeNewEl ? cardTypeNewEl.value : 'debit',
+                            cardNetwork: cardNetNewEl ? cardNetNewEl.value : 'Visa'
+                        }).then(function (res) {
+                            if (btn) { btn.disabled = false; btn.innerHTML = '<span>🚀</span> Submit Account Application'; }
+                            if (res && res.success) {
+                                showToast('✅ New account & virtual card opened: ' + typeText, 'success');
+                                accForm.reset();
+                                loadUserAccounts();
+                            } else {
+                                showToast('⚠️ Could not open account.', 'error');
+                            }
+                        });
+                    }
                 });
             }
 
-            /* ── Account card hover: show quick-copy on account number ── */
-            document.querySelectorAll('.card-account-number').forEach(function (el) {
-                el.style.cursor = 'pointer';
-                el.title = 'Click to copy card number';
-                el.addEventListener('click', function () {
-                    var num = this.textContent.trim();
-                    if (navigator.clipboard) {
-                        navigator.clipboard.writeText(num).then(function () {
-                            showToast('📋 Card number copied!', 'info');
-                        });
-                    } else {
-                        showToast('📋 Card: ' + num, 'info');
-                    }
-                });
-            });
+            // Initial load from server database
+            loadUserAccounts();
         });
     </script>
 

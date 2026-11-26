@@ -33,23 +33,35 @@
                 <form action="index.html" method="GET">
                     <div class="form-group">
                         <label for="email" class="form-label">Email or Account ID</label>
-                        <input type="email" id="email" name="email" class="form-input" placeholder="name@domain.com" required>
+                        <input type="text" id="email" name="email" class="form-input" placeholder="e.g. alex.morgan@apexbank.com or any name" required>
                     </div>
 
                     <div class="form-group">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" id="password" name="password" class="form-input" placeholder="••••••••" required minlength="8">
+                        <input type="password" id="password" name="password" class="form-input" placeholder="••••••••" required minlength="8" value="ApexPass123!">
                     </div>
 
                     <div class="form-row">
                         <label class="checkbox-group">
-                            <input type="checkbox" name="remember"> Remember Me
+                            <input type="checkbox" name="remember" checked> Remember Me
                         </label>
                         <a href="forgot-password.html" class="auth-link">Forgot Password?</a>
                     </div>
 
                     <button type="submit" class="btn-primary">Sign In</button>
                 </form>
+
+                <div class="quick-accounts" style="margin-top: 16px; padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.18); font-size: 0.8rem;">
+                    <div style="color: var(--text-dim, #94a3b8); margin-bottom: 8px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                        <span>⚡</span> Click to Test Different Accounts:
+                    </div>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        <button type="button" class="btn-demo-acc" data-id="alex.morgan@apexbank.com" style="background: rgba(37,99,235,0.18); border: 1px solid rgba(37,99,235,0.45); color: #60a5fa; border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 0.78rem; font-weight: 500;">Alex Morgan</button>
+                        <button type="button" class="btn-demo-acc" data-id="priya.sharma@apexbank.com" style="background: rgba(16,185,129,0.18); border: 1px solid rgba(16,185,129,0.45); color: #34d399; border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 0.78rem; font-weight: 500;">Priya Sharma</button>
+                        <button type="button" class="btn-demo-acc" data-id="john.doe@apexbank.com" style="background: rgba(245,158,11,0.18); border: 1px solid rgba(245,158,11,0.45); color: #fbbf24; border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 0.78rem; font-weight: 500;">John Doe</button>
+                    </div>
+                    <div style="margin-top: 6px; color: #64748b; font-size: 0.72rem;">Tip: You can also type any custom name or email above to log in directly!</div>
+                </div>
 
                 <div class="form-switch">
                     Don't have an account? <a href="signup.html" class="auth-link">Sign Up</a>
@@ -87,29 +99,69 @@
                 });
             }
 
-            /* ── Live email validation ── */
+            /* ── Live email/ID validation ── */
             if (emailInput) {
+                // Pre-fill email if passed in query string (e.g. from signup)
+                var urlParams = new URLSearchParams(window.location.search);
+                var paramEmail = urlParams.get('email');
+                if (paramEmail) {
+                    emailInput.value = paramEmail;
+                }
+
                 emailInput.addEventListener('blur', function () {
-                    var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (this.value && !re.test(this.value)) {
-                        this.style.borderColor = '#ef4444';
-                        showToast('⚠️ Please enter a valid email address.', 'warning');
-                    } else {
-                        this.style.borderColor = '';
+                    var val = this.value.trim();
+                    if (val.includes('@')) {
+                        var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!re.test(val)) {
+                            this.style.borderColor = '#ef4444';
+                            showToast('⚠️ Please enter a valid email or ID.', 'warning');
+                            return;
+                        }
                     }
+                    this.style.borderColor = '';
                 });
             }
 
-            /* ── Form submit: loading state + redirect ── */
+            /* ── Quick Demo Account Switchers ── */
+            document.querySelectorAll('.btn-demo-acc').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var targetId = this.getAttribute('data-id');
+                    if (emailInput) emailInput.value = targetId;
+                    if (passwordInput && !passwordInput.value) passwordInput.value = 'ApexPass123!';
+                    showToast('👉 Selected demo account: ' + targetId, 'info');
+                });
+            });
+
+            /* ── Form submit: Authenticate user & switch active profile ── */
             if (form && submitBtn) {
-                form.addEventListener('submit', function (e) {
+                form.addEventListener('submit', async function (e) {
                     e.preventDefault();
+                    var identifier = emailInput ? emailInput.value.trim() : '';
+                    var pass = passwordInput ? passwordInput.value : '';
+
+                    if (!identifier) {
+                        showToast('⚠️ Please enter an email, account ID, or name.', 'warning');
+                        return;
+                    }
+
                     submitBtn.disabled = true;
                     submitBtn.textContent = '🔒 Signing in…';
-                    showToast('🔐 Verifying credentials…', 'info');
+
+                    // Authenticate with backend REST API first so DB user.id is synced cleanly
+                    var activeUser = null;
+                    if (window.ApexAPI && typeof window.ApexAPI.login === 'function') {
+                        activeUser = await window.ApexAPI.login(identifier, pass);
+                    }
+                    if (!activeUser && typeof loginUser === 'function') {
+                        activeUser = loginUser(identifier, pass, true);
+                    }
+
+                    var displayName = activeUser ? (activeUser.fullName || activeUser.firstName || 'User') : identifier;
+                    showToast('👋 Welcome back, ' + displayName + '! Accessing dashboard…', 'success');
+
                     setTimeout(function () {
                         window.location.href = 'index.html';
-                    }, 1400);
+                    }, 500);
                 });
             }
         });

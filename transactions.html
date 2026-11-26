@@ -11,7 +11,7 @@
     <!-- Main Navigation Header -->
     <header class="main-nav">
         <div class="nav-container">
-            <a href="login.html" class="brand">
+            <a href="index.html" class="brand">
                 <span class="brand-icon">🏦</span>
                 <span>Apex<span>Bank</span></span>
             </a>
@@ -341,7 +341,7 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tx-table-body">
                         <!-- Row 1: Salary Credit -->
                         <tr>
                             <td>
@@ -631,10 +631,10 @@
             &copy; 2026 ApexBank Financial Inc. FDIC & RBI Insured. All rights reserved.
         </div>
         <ul class="footer-links">
-            <li><a href="login.html">Privacy Policy</a></li>
-            <li><a href="login.html">Terms of Service</a></li>
-            <li><a href="login.html">Security Guidelines</a></li>
-            <li><a href="login.html">Support Hotline: 1800-APEX-BANK</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Security Guidelines</a></li>
+            <li><a href="#">Support Hotline: 1800-APEX-BANK</a></li>
         </ul>
     </footer>
     <script src="js/main.js"></script>
@@ -652,58 +652,242 @@
                 }, 100 * i);
             });
 
-            /* ── Transfer form submit ── */
+            var esc = typeof escapeHTML === 'function' ? escapeHTML : function (s) { return String(s || ''); };
+
+            /* ── Load Live KPI Stats & Account Options from Database ── */
+            function loadTransactionStatsAndAccounts() {
+                var profile = typeof getUserProfile === 'function' ? getUserProfile() : null;
+                if (!profile) return;
+                var uid = profile.id || profile.email;
+
+                if (window.ApexAPI && typeof window.ApexAPI.getStats === 'function') {
+                    window.ApexAPI.getStats(uid).then(function (stats) {
+                        if (!stats) return;
+                        var cards = document.querySelectorAll('.stats-grid .stat-card');
+                        if (cards[0]) {
+                            var v0 = cards[0].querySelector('.stat-value');
+                            if (v0) v0.textContent = '+₹' + Number(stats.monthlyIncome || 0).toLocaleString('en-IN') + '.00';
+                        }
+                        if (cards[1]) {
+                            var v1 = cards[1].querySelector('.stat-value');
+                            if (v1) v1.textContent = '-₹' + Number(stats.monthlyExpenses || 0).toLocaleString('en-IN') + '.00';
+                        }
+                        if (cards[2]) {
+                            var v2 = cards[2].querySelector('.stat-value');
+                            var net = Number(stats.netSavings || 0);
+                            if (v2) v2.textContent = (net >= 0 ? '+' : '-') + '₹' + Math.abs(net).toLocaleString('en-IN') + '.00';
+                        }
+                        if (cards[3]) {
+                            var v3 = cards[3].querySelector('.stat-value');
+                            if (v3) v3.textContent = '₹' + Number(stats.pendingAmount || 0).toLocaleString('en-IN') + '.00';
+                        }
+                    });
+                }
+
+                if (window.ApexAPI && typeof window.ApexAPI.getAccounts === 'function') {
+                    window.ApexAPI.getAccounts(uid).then(function (accounts) {
+                        if (!accounts || !accounts.length) return;
+                        var fromSel = document.getElementById('from-account');
+                        if (fromSel) {
+                            fromSel.innerHTML = '';
+                            accounts.forEach(function (acc) {
+                                var opt = document.createElement('option');
+                                var isCredit = acc.cardType === 'credit' || acc.accountType === 'credit';
+                                var last4 = String(acc.accountNumber || '').slice(-4) || '0000';
+                                opt.value = acc.id;
+                                opt.setAttribute('data-acc-type', acc.accountType || 'checking');
+                                if (isCredit) {
+                                    var lim = parseFloat(acc.creditLimit) || 250000;
+                                    var used = (parseFloat(acc.balance) || 0) < 0 ? Math.abs(parseFloat(acc.balance)) : 0;
+                                    opt.textContent = acc.title + ' (*' + last4 + ') - Avail: ₹' + Math.max(0, lim - used).toLocaleString('en-IN') + '.00';
+                                } else {
+                                    opt.textContent = acc.title + ' (*' + last4 + ') - ₹' + (parseFloat(acc.balance) || 0).toLocaleString('en-IN') + '.00';
+                                }
+                                fromSel.appendChild(opt);
+                            });
+                        }
+                    });
+                }
+            }
+
+            /* ── Transfer form submit (Saves directly to server database) ── */
             var transferForm = document.querySelector('#transfer-money-form form');
             if (transferForm) {
                 transferForm.addEventListener('submit', function (e) {
                     e.preventDefault();
                     var amtEl = document.getElementById('transfer-amount');
                     var benEl = document.getElementById('beneficiary-name');
-                    var amount = amtEl ? '₹' + parseFloat(amtEl.value).toLocaleString('en-IN') : '₹0';
+                    var fromEl = document.getElementById('from-account');
+                    var catEl = document.getElementById('transfer-category');
+                    var remarkEl = document.getElementById('transfer-note');
+                    var amountVal = amtEl ? parseFloat(amtEl.value) : 0;
                     var ben = benEl ? benEl.value.trim() : 'Beneficiary';
+                    var selectedOpt = fromEl ? fromEl.options[fromEl.selectedIndex] : null;
+                    var fromAccId = selectedOpt ? selectedOpt.value : '';
+                    var fromAccText = selectedOpt ? selectedOpt.text : 'Everyday Checking';
+                    var fromAccType = selectedOpt ? (selectedOpt.getAttribute('data-acc-type') || 'checking') : 'checking';
+                    var categoryLabel = catEl && catEl.options[catEl.selectedIndex] ? catEl.options[catEl.selectedIndex].text : 'Wire Transfer';
+                    var remark = remarkEl ? remarkEl.value.trim() : '';
+
+                    if (!amountVal || amountVal <= 0) {
+                        showToast('⚠️ Please enter a valid transfer amount.', 'warning');
+                        return;
+                    }
+
                     var btn = transferForm.querySelector('button[type="submit"]');
-                    if (btn) { btn.disabled = true; btn.textContent = '⏳ Processing…'; }
-                    showToast('🔐 OTP sent – transfer of ' + amount + ' to ' + ben + ' pending authorization.', 'info');
-                    setTimeout(function () {
-                        showToast('✅ Transfer of ' + amount + ' to ' + ben + ' completed!', 'success');
-                        if (btn) { btn.disabled = false; btn.innerHTML = '<span>🔒</span> Authorize &amp; Send Transfer'; }
-                        transferForm.reset();
-                    }, 2500);
+                    if (btn) { btn.disabled = true; btn.textContent = '⏳ Processing Transfer…'; }
+
+                    showToast('🔐 Authorizing transfer of ₹' + amountVal.toLocaleString('en-IN') + ' to ' + ben + '…', 'info');
+
+                    if (window.ApexAPI && typeof window.ApexAPI.transferMoney === 'function') {
+                        window.ApexAPI.transferMoney({
+                            recipient: ben,
+                            amount: amountVal,
+                            category: categoryLabel,
+                            remark: remark,
+                            fromAccountId: fromAccId,
+                            fromAccountType: fromAccType,
+                            fromAccount: fromAccText
+                        }).then(function (res) {
+                            if (btn) { btn.disabled = false; btn.innerHTML = '<span>🔒</span> Authorize &amp; Send Transfer'; }
+                            if (res && res.success) {
+                                transferForm.reset();
+                                showToast('✅ Transfer of ₹' + amountVal.toLocaleString('en-IN') + ' to ' + ben + ' completed and saved to database!', 'success');
+                                loadTransactions();
+                                loadTransactionStatsAndAccounts();
+                            } else {
+                                showToast('⚠️ ' + ((res && res.error) || 'Transfer failed'), 'error');
+                            }
+                        });
+                    } else {
+                        setTimeout(function () {
+                            if (btn) { btn.disabled = false; btn.innerHTML = '<span>🔒</span> Authorize &amp; Send Transfer'; }
+                            transferForm.reset();
+                            showToast('✅ Transfer completed!', 'success');
+                        }, 1000);
+                    }
                 });
             }
 
-            /* ── Live search filter on transactions table ── */
+            /* ── Dynamic Live Transactions Loader from Server Database ── */
+            function loadTransactions() {
+                var profile = typeof getUserProfile === 'function' ? getUserProfile() : null;
+                if (!profile) return;
+
+                if (window.ApexAPI && typeof window.ApexAPI.getTransactions === 'function') {
+                    window.ApexAPI.getTransactions(profile.id || profile.email).then(function (txs) {
+                        if (!txs || !txs.length) return;
+                        var tbody = document.getElementById('tx-table-body');
+                        if (!tbody) return;
+
+                        tbody.innerHTML = '';
+                        txs.forEach(function (tx) {
+                            var isCredit = tx.type === 'credit';
+                            var icon = isCredit ? '💰' : '💸';
+                            var iconBg = isCredit ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)';
+                            var iconColor = isCredit ? 'var(--primary, #10b981)' : '#f87171';
+                            var d = new Date(tx.date);
+                            var dateStr = isNaN(d.getTime()) ? 'Today' : d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+                            var timeStr = isNaN(d.getTime()) ? 'Just now' : d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                            var sign = isCredit ? '+' : '-';
+                            var amtClass = isCredit ? 'credit' : 'debit';
+                            var amtFormatted = sign + '₹' + (parseFloat(tx.amount) || 0).toLocaleString('en-IN') + '.00';
+
+                            var tr = document.createElement('tr');
+                            tr.setAttribute('data-account', String(tx.account || '').toLowerCase());
+                            tr.setAttribute('data-category', String(tx.category || '').toLowerCase());
+                            tr.setAttribute('data-status', String(tx.status || 'Completed').toLowerCase());
+                            tr.innerHTML =
+                                '<td>' +
+                                    '<div class="transaction-desc-cell">' +
+                                        '<div class="transaction-icon" style="background: ' + iconBg + '; color: ' + iconColor + ';">' +
+                                            icon +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<span class="tx-title">' + esc(tx.title) + '</span>' +
+                                            '<span class="tx-ref">' + esc(tx.referenceId || 'TXN-000000') + ' • Verified</span>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</td>' +
+                                '<td><span class="tx-ref">' + esc(tx.referenceId || 'TXN-000000') + '</span></td>' +
+                                '<td>' +
+                                    '<span class="tx-date">' + esc(dateStr) + '</span>' +
+                                    '<span class="tx-time">' + esc(timeStr) + '</span>' +
+                                '</td>' +
+                                '<td>' + esc(tx.account || 'Checking') + '</td>' +
+                                '<td><span class="category-pill">' + esc(tx.category || 'Transfer') + '</span></td>' +
+                                '<td><span class="status-pill ' + (isCredit ? 'completed' : 'failed') + '">' + (isCredit ? 'Credit' : 'Debit') + '</span></td>' +
+                                '<td><span class="amount-text ' + amtClass + '">' + esc(amtFormatted) + '</span></td>' +
+                                '<td><span class="status-pill completed">' + esc(tx.status || 'Completed') + '</span></td>' +
+                                '<td><a href="#" class="action-link-btn">Receipt</a></td>';
+                            tbody.appendChild(tr);
+                        });
+
+                        var pagInfo = document.querySelector('.pagination-info');
+                        if (pagInfo) {
+                            pagInfo.innerHTML = 'Showing <strong>1 to ' + txs.length + '</strong> of <strong>' + txs.length + '</strong> transactions';
+                        }
+                    });
+                }
+            }
+
+            // Initial load of transactions, stats & accounts from database
+            loadTransactionStatsAndAccounts();
+            loadTransactions();
+
+            /* ── Live search & dropdown filter on transactions table ── */
             var searchInput = document.getElementById('search-query');
             var filterForm = document.querySelector('.toolbar-card form');
+            function applyTxFilters(silent) {
+                var query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+                var account = document.getElementById('filter-account') ? document.getElementById('filter-account').value.toLowerCase() : 'all';
+                var category = document.getElementById('filter-category') ? document.getElementById('filter-category').value.toLowerCase() : 'all';
+                var status = document.getElementById('filter-status') ? document.getElementById('filter-status').value.toLowerCase() : 'all';
+                var rows = document.querySelectorAll('.banking-table tbody tr');
+                var visible = 0;
+                rows.forEach(function (row) {
+                    var text = row.textContent.toLowerCase();
+                    var rowAcc = (row.getAttribute('data-account') || text).toLowerCase();
+                    var rowCat = (row.getAttribute('data-category') || text).toLowerCase();
+                    var rowStat = (row.getAttribute('data-status') || text).toLowerCase();
+
+                    var matchQuery = !query || text.includes(query);
+                    var matchAcc = account === 'all' || rowAcc.includes(account) || text.includes(account);
+                    var matchCat = category === 'all' || rowCat.includes(category) || text.includes(category);
+                    var matchStat = status === 'all' || rowStat.includes(status) || text.includes(status);
+
+                    var show = matchQuery && matchAcc && matchCat && matchStat;
+                    row.style.display = show ? '' : 'none';
+                    if (show) visible++;
+                });
+                if (!silent) {
+                    showToast('🔍 ' + visible + ' transaction(s) found.', visible > 0 ? 'info' : 'warning');
+                }
+            }
+
             if (filterForm) {
                 filterForm.addEventListener('submit', function (e) {
                     e.preventDefault();
-                    var query = searchInput ? searchInput.value.trim().toLowerCase() : '';
-                    var account = document.getElementById('filter-account') ? document.getElementById('filter-account').value : 'all';
-                    var category = document.getElementById('filter-category') ? document.getElementById('filter-category').value : 'all';
-                    var status = document.getElementById('filter-status') ? document.getElementById('filter-status').value : 'all';
-                    var rows = document.querySelectorAll('.banking-table tbody tr');
-                    var visible = 0;
-                    rows.forEach(function (row) {
-                        var text = row.textContent.toLowerCase();
-                        var show = (!query || text.includes(query));
-                        row.style.display = show ? '' : 'none';
-                        if (show) visible++;
-                    });
-                    showToast('🔍 ' + visible + ' transaction(s) found.', visible > 0 ? 'info' : 'warning');
+                    applyTxFilters(false);
                 });
             }
+            if (searchInput) {
+                searchInput.addEventListener('input', function () { applyTxFilters(true); });
+            }
 
-            /* ── Receipt buttons ── */
-            document.querySelectorAll('.action-link-btn').forEach(function (btn) {
-                btn.addEventListener('click', function (e) {
+            /* ── Receipt buttons (delegated so dynamically added rows also work) ── */
+            var tableBody = document.getElementById('tx-table-body');
+            if (tableBody) {
+                tableBody.addEventListener('click', function (e) {
+                    var btn = e.target.closest('.action-link-btn');
+                    if (!btn) return;
                     e.preventDefault();
                     var row = btn.closest('tr');
                     var txId = row ? row.querySelector('.tx-ref') : null;
                     var id = txId ? txId.textContent.trim() : 'TXN-XXXXXXX';
-                    showToast('🧾 Downloading receipt for ' + id + '…', 'info');
+                    showToast('🧾 Receipt downloaded for ' + id + '!', 'info');
                 });
-            });
+            }
 
             /* ── Frequent payee "Pay" buttons quick-fill the transfer form ── */
             var payeeItems = document.querySelectorAll('.toggle-list .toggle-item');

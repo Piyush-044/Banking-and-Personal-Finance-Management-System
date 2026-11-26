@@ -104,11 +104,11 @@
             <div class="profile-hero-right">
                 <div class="profile-quick-metric">
                     <span class="metric-label">Net Portfolio Value</span>
-                    <span class="metric-value">₹14,85,620.00</span>
+                    <span class="metric-value" id="hero-net-worth">₹14,85,620.00</span>
                 </div>
                 <div class="profile-quick-metric">
                     <span class="metric-label">Linked Accounts</span>
-                    <span class="metric-value">4 Active</span>
+                    <span class="metric-value" id="hero-linked-accounts">4 Active</span>
                 </div>
                 <div class="profile-quick-metric">
                     <span class="metric-label">Security Health</span>
@@ -133,7 +133,7 @@
                     </div>
 
                     <form id="personal-form" class="banking-form">
-                        <div class="form-grid-2" style="background: rgba(255, 255, 255, 0.02); padding: 16px; border-radius: var(--radius); border: 1px dashed var(--border); margin-bottom: 6px;">
+                        <div class="form-grid-2 cid-highlight-box" style="background: rgba(255, 255, 255, 0.02); padding: 16px; border-radius: var(--radius); border: 1px dashed var(--border); margin-bottom: 6px;">
                             <div class="form-group">
                                 <label class="form-label" for="customer-id">Customer ID / Account ID <span style="color:var(--accent-blue); font-size:0.75rem; font-weight:normal;">(Editable &amp; Saved)</span></label>
                                 <div style="display: flex; gap: 8px;">
@@ -555,6 +555,18 @@
             // Initial load of profile data into form & hero
             var currentProfile = getUserProfile();
             populateProfileForm(currentProfile);
+            syncUserProfileUI(currentProfile);
+
+            // Sync live net worth & active account count from backend DB
+            if (window.ApexAPI && typeof window.ApexAPI.getStats === 'function' && currentProfile) {
+                window.ApexAPI.getStats(currentProfile.id || currentProfile.email).then(function (stats) {
+                    if (!stats) return;
+                    var nw = document.getElementById('hero-net-worth');
+                    if (nw) nw.textContent = '₹' + Number(stats.totalNetWorth || 0).toLocaleString('en-IN') + '.00';
+                    var la = document.getElementById('hero-linked-accounts');
+                    if (la) la.textContent = (stats.activeAccountsCount || 0) + ' Active';
+                });
+            }
 
             /* ── Quick Edit Customer ID from Hero or Button ── */
             var handleEditCustomerId = function () {

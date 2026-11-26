@@ -275,20 +275,20 @@
                     <div class="dash-card-header" style="margin-bottom: 14px;">
                         <div>
                             <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;"><span>💳</span> Active Primary Card</h3>
-                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">Titanium Debit Card linked to Savings.</p>
+                            <p id="vcard-subtitle" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">Debit Card linked to Checking.</p>
                         </div>
-                        <span style="font-size: 0.72rem; color: #10b981; background: rgba(16,185,129,0.12); padding: 3px 8px; border-radius: 99px; font-weight:700; border:1px solid rgba(16,185,129,0.25);">ACTIVE</span>
+                        <span id="vcard-status-badge" style="font-size: 0.72rem; color: #10b981; background: rgba(16,185,129,0.12); padding: 3px 8px; border-radius: 99px; font-weight:700; border:1px solid rgba(16,185,129,0.25);">ACTIVE</span>
                     </div>
 
-                    <div class="virtual-card-wrap" id="titanium-card-element">
+                    <div class="virtual-card-wrap" id="titanium-card-element" style="cursor:pointer;" title="Click Manage in Accounts to edit card type, expiry & CVV">
                         <div class="vcard-top">
-                            <div class="vcard-logo">Apex<span>Bank</span> <small style="font-size:0.65rem; color:#94a3b8; font-weight:normal;">TITANIUM</small></div>
+                            <div class="vcard-logo">Apex<span>Bank</span> <small id="vcard-network-badge" style="font-size:0.68rem; color:#94a3b8; font-weight:700; letter-spacing:1px;">VISA</small></div>
                             <span style="font-size: 1.2rem;">📶</span>
                         </div>
 
                         <div class="vcard-chip-row">
                             <div class="emv-chip" style="width:34px; height:26px;"></div>
-                            <span style="font-size: 0.72rem; color: #94a3b8; letter-spacing: 1px;">PLATINUM DEBIT</span>
+                            <span id="vcard-type-label" class="card-type-badge-pill debit">DEBIT CARD</span>
                         </div>
 
                         <div class="vcard-number" id="vcard-number-display">•••• •••• •••• 4291</div>
@@ -395,49 +395,120 @@
                 });
             });
 
-            /* ── Virtual Card Details Toggle (Show/Hide CVV) ── */
-            var btnToggleCard = document.getElementById('btn-toggle-card-details');
+            var esc = typeof escapeHTML === 'function' ? escapeHTML : function (s) { return String(s || ''); };
+            var primaryCard = {
+                id: null,
+                accountNumber: '4532 8921 7734 4291',
+                expiry: '08/29',
+                cvv: '819',
+                cardType: 'debit',
+                cardNetwork: 'Visa',
+                cardholderName: profile && profile.fullName ? profile.fullName.toUpperCase() : 'ALEX MORGAN',
+                status: 'Active',
+                title: 'Everyday Checking Account'
+            };
             var isCardRevealed = false;
+            var isCardFrozen = false;
+            var cardRevealTimer = null;
+
+            function maskNum(num) {
+                var s = String(num || '').trim();
+                var digits = s.replace(/[^\d•*]/g, '');
+                var last4 = digits.slice(-4) || '4291';
+                return '•••• •••• •••• ' + last4;
+            }
+
+            function renderPrimaryCard() {
+                var numDisplay = document.getElementById('vcard-number-display');
+                var cvvDisplay = document.getElementById('vcard-cvv-display');
+                var holderEl = document.getElementById('vcard-holder-name');
+                var typeEl = document.getElementById('vcard-type-label');
+                var netEl = document.getElementById('vcard-network-badge');
+                var subEl = document.getElementById('vcard-subtitle');
+                var statusBadge = document.getElementById('vcard-status-badge');
+                var cardWrap = document.getElementById('titanium-card-element');
+                var freezeText = document.getElementById('vcard-freeze-text');
+                var toggleText = document.getElementById('vcard-toggle-text');
+
+                var cType = (primaryCard.cardType || 'debit').toLowerCase() === 'credit' ? 'credit' : 'debit';
+                isCardFrozen = String(primaryCard.status || '').toLowerCase() === 'frozen';
+
+                if (numDisplay) numDisplay.textContent = isCardRevealed ? primaryCard.accountNumber : maskNum(primaryCard.accountNumber);
+                if (cvvDisplay) cvvDisplay.textContent = (primaryCard.expiry || '08/29') + ' • ' + (isCardRevealed ? (primaryCard.cvv || '819') : '•••');
+                if (holderEl) holderEl.textContent = (primaryCard.cardholderName || 'USER').toUpperCase();
+                if (netEl) netEl.textContent = (primaryCard.cardNetwork || 'VISA').toUpperCase();
+                if (typeEl) {
+                    typeEl.textContent = cType === 'credit' ? 'CREDIT CARD' : 'DEBIT CARD';
+                    typeEl.className = 'card-type-badge-pill ' + cType;
+                }
+                if (subEl) subEl.textContent = (primaryCard.cardNetwork || 'Visa') + ' ' + (cType === 'credit' ? 'Credit Card' : 'Debit Card') + ' • ' + (primaryCard.title || 'Primary Account');
+                if (statusBadge) {
+                    statusBadge.textContent = isCardFrozen ? 'FROZEN' : 'ACTIVE';
+                    statusBadge.style.color = isCardFrozen ? '#f87171' : '#10b981';
+                    statusBadge.style.borderColor = isCardFrozen ? 'rgba(239,68,68,0.35)' : 'rgba(16,185,129,0.25)';
+                    statusBadge.style.background = isCardFrozen ? 'rgba(239,68,68,0.12)' : 'rgba(16,185,129,0.12)';
+                }
+                if (cardWrap) cardWrap.style.filter = isCardFrozen ? 'grayscale(80%) brightness(80%)' : 'none';
+                if (freezeText) freezeText.textContent = isCardFrozen ? 'Unfreeze Card' : 'Freeze Card';
+                if (toggleText) toggleText.textContent = isCardRevealed ? 'Hide Details' : 'Show Details';
+            }
+
+            /* ── Sync Self Payee Chip ── */
+            var selfPayeeBtn = document.querySelector('.quick-payee-btn');
+            if (selfPayeeBtn && profile) {
+                var cleanHandle = (profile.firstName || 'user').toLowerCase().replace(/[^a-z0-9]/g, '') + '@apex';
+                selfPayeeBtn.setAttribute('data-name', profile.fullName || 'Self');
+                selfPayeeBtn.setAttribute('data-vpa', cleanHandle);
+                var av = selfPayeeBtn.querySelector('.quick-payee-avatar');
+                if (av) av.textContent = profile.avatarInitials || 'U';
+                var recEl = document.getElementById('quick-recipient');
+                if (recEl) recEl.value = (profile.fullName || 'Self') + ' • ' + cleanHandle;
+            }
+
+            /* ── Virtual Card Details Toggle (Show/Hide Real CVV & Card No.) ── */
+            var btnToggleCard = document.getElementById('btn-toggle-card-details');
             if (btnToggleCard) {
                 btnToggleCard.addEventListener('click', function () {
                     isCardRevealed = !isCardRevealed;
-                    var numDisplay = document.getElementById('vcard-number-display');
-                    var cvvDisplay = document.getElementById('vcard-cvv-display');
-                    var toggleText = document.getElementById('vcard-toggle-text');
-
+                    renderPrimaryCard();
+                    clearTimeout(cardRevealTimer);
                     if (isCardRevealed) {
-                        numDisplay.textContent = '4532 8921 7734 4291';
-                        cvvDisplay.textContent = '08/29 • 819';
-                        toggleText.textContent = 'Hide Details';
-                        showToast('🔒 Virtual card details revealed. Auto-hides in 15s.', 'info');
-                        setTimeout(function () {
-                            if (isCardRevealed) btnToggleCard.click();
+                        showToast('🔒 Real card number & CVV revealed. Auto-hides in 15s.', 'info');
+                        cardRevealTimer = setTimeout(function () {
+                            if (isCardRevealed) {
+                                isCardRevealed = false;
+                                renderPrimaryCard();
+                            }
                         }, 15000);
-                    } else {
-                        numDisplay.textContent = '•••• •••• •••• 4291';
-                        cvvDisplay.textContent = '08/29 •••';
-                        toggleText.textContent = 'Show Details';
                     }
                 });
             }
 
-            /* ── Freeze Card Toggle ── */
+            /* ── Freeze Card Toggle (Persists to server database) ── */
             var btnFreeze = document.getElementById('btn-freeze-card');
-            var isCardFrozen = false;
             if (btnFreeze) {
                 btnFreeze.addEventListener('click', function () {
-                    isCardFrozen = !isCardFrozen;
-                    var cardWrap = document.getElementById('titanium-card-element');
-                    var freezeText = document.getElementById('vcard-freeze-text');
-                    if (isCardFrozen) {
-                        cardWrap.style.filter = 'grayscale(80%) brightness(80%)';
-                        freezeText.textContent = 'Unfreeze Card';
-                        showToast('❄️ Virtual card is FROZEN. Online transactions blocked.', 'warning');
+                    var nextStatus = isCardFrozen ? 'Active' : 'Frozen';
+                    primaryCard.status = nextStatus;
+                    renderPrimaryCard();
+
+                    if (primaryCard.id && window.ApexAPI && typeof window.ApexAPI.updateAccount === 'function') {
+                        window.ApexAPI.updateAccount({ id: primaryCard.id, status: nextStatus }).then(function (res) {
+                            if (res && res.success) {
+                                showToast(nextStatus === 'Frozen' ? '❄️ Card is FROZEN and saved to database.' : '✅ Card is ACTIVE and unlocked.', nextStatus === 'Frozen' ? 'warning' : 'success');
+                            }
+                        });
                     } else {
-                        cardWrap.style.filter = 'none';
-                        freezeText.textContent = 'Freeze Card';
-                        showToast('✅ Virtual card is ACTIVE and unlocked.', 'success');
+                        showToast(nextStatus === 'Frozen' ? '❄️ Virtual card is FROZEN.' : '✅ Virtual card is ACTIVE.', nextStatus === 'Frozen' ? 'warning' : 'success');
                     }
+                });
+            }
+
+            /* ── Clicking card navigates to Accounts card manager ── */
+            var cardWrapEl = document.getElementById('titanium-card-element');
+            if (cardWrapEl) {
+                cardWrapEl.addEventListener('click', function () {
+                    window.location.href = 'accounts.html';
                 });
             }
 
@@ -484,37 +555,102 @@
                     submitBtn.disabled = true;
                     submitBtn.innerHTML = '<span>⏳</span> Processing Transfer…';
 
-                    setTimeout(function () {
+                    if (window.ApexAPI && typeof window.ApexAPI.transferMoney === 'function') {
+                        window.ApexAPI.transferMoney({ recipient: recipient, amount: amountVal, category: 'Quick Transfer' }).then(function (res) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = '<span>🚀</span> Send Transfer Now';
+                            if (res && res.success) {
+                                loadDashboardData();
+                                showToast('✅ Transfer of ₹' + amountVal.toLocaleString('en-IN') + ' sent to ' + recipient + '!', 'success');
+                            } else {
+                                showToast('⚠️ ' + ((res && res.error) || 'Transfer failed'), 'error');
+                            }
+                        });
+                    } else {
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = '<span>🚀</span> Send Transfer Now';
-
-                        // Notification
-                        showToast('✅ Transfer of ₹' + amountVal.toLocaleString('en-IN') + ' sent to ' + recipient + ' successfully!', 'success');
-
-                        // Dynamically append transaction to recent list
-                        var txList = document.getElementById('dashboard-tx-list');
-                        if (txList) {
-                            var newRow = document.createElement('div');
-                            newRow.className = 'dash-tx-item';
-                            newRow.setAttribute('data-type', 'debit');
-                            newRow.innerHTML = 
-                                '<div class="dash-tx-left">' +
-                                    '<div class="dash-tx-icon" style="background: rgba(37,99,235,0.12); color:#2563eb;">💸</div>' +
-                                    '<div>' +
-                                        '<div class="dash-tx-title">Transfer • ' + recipient.split('•')[0].trim() + '</div>' +
-                                        '<div class="dash-tx-meta">Just now • Instant Transfer</div>' +
-                                    '</div>' +
-                                '</div>' +
-                                '<div>' +
-                                    '<div class="dash-tx-amount debit">-₹' + amountVal.toLocaleString('en-IN') + '.00</div>' +
-                                    '<div class="dash-tx-meta" style="text-align:right;">Completed ✓</div>' +
-                                '</div>';
-                            txList.insertBefore(newRow, txList.firstChild);
-                        }
-                    }, 650);
+                    }
                 });
             }
 
+            /* ── Dynamic Live Dashboard Loader from Server Database ── */
+            function loadDashboardData() {
+                var prof = typeof getUserProfile === 'function' ? getUserProfile() : null;
+                if (!prof) return;
+                var uid = prof.id || prof.email;
+
+                if (window.ApexAPI && typeof window.ApexAPI.getStats === 'function') {
+                    window.ApexAPI.getStats(uid).then(function (stats) {
+                        if (!stats) return;
+                        var statCards = document.querySelectorAll('.stats-grid .stat-card');
+                        if (statCards[0]) {
+                            var v0 = statCards[0].querySelector('.stat-value');
+                            if (v0) v0.textContent = '₹' + Number(stats.totalNetWorth || 0).toLocaleString('en-IN') + '.00';
+                        }
+                        if (statCards[1]) {
+                            var v1 = statCards[1].querySelector('.stat-value');
+                            if (v1) v1.textContent = '₹' + Number(stats.savingsBalance || 0).toLocaleString('en-IN') + '.00';
+                        }
+                        if (statCards[2]) {
+                            var v2 = statCards[2].querySelector('.stat-value');
+                            if (v2) v2.textContent = '₹' + Number(stats.monthlyExpenses || 0).toLocaleString('en-IN') + '.00';
+                        }
+                        if (statCards[3]) {
+                            var v3 = statCards[3].querySelector('.stat-value');
+                            if (v3) v3.textContent = '₹' + Number(stats.availableCreditLimit || 0).toLocaleString('en-IN') + '.00';
+                        }
+                    });
+                }
+
+                if (window.ApexAPI && typeof window.ApexAPI.getAccounts === 'function') {
+                    window.ApexAPI.getAccounts(uid).then(function (accounts) {
+                        if (!accounts || !accounts.length) return;
+                        var acc = accounts[0];
+                        primaryCard = Object.assign({}, primaryCard, acc);
+                        renderPrimaryCard();
+                    });
+                }
+
+                if (window.ApexAPI && typeof window.ApexAPI.getTransactions === 'function') {
+                    window.ApexAPI.getTransactions(uid).then(function (txs) {
+                        if (!txs || !txs.length) return;
+                        var txList = document.getElementById('dashboard-tx-list');
+                        if (!txList) return;
+                        txList.innerHTML = '';
+                        txs.slice(0, 6).forEach(function (tx) {
+                            var isCredit = tx.type === 'credit';
+                            var icon = isCredit ? '💰' : '💸';
+                            var iconBg = isCredit ? 'rgba(16, 185, 129, 0.15)' : 'rgba(37, 99, 235, 0.12)';
+                            var iconColor = isCredit ? 'var(--primary, #10b981)' : '#2563eb';
+                            var d = new Date(tx.date);
+                            var dateStr = isNaN(d.getTime()) ? 'Recent' : d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+                            var sign = isCredit ? '+' : '-';
+                            var amtClass = isCredit ? 'credit' : 'debit';
+                            var amtFormatted = sign + '₹' + (parseFloat(tx.amount) || 0).toLocaleString('en-IN') + '.00';
+
+                            var item = document.createElement('div');
+                            item.className = 'dash-tx-item';
+                            item.setAttribute('data-type', tx.type);
+                            item.innerHTML =
+                                '<div class="dash-tx-left">' +
+                                    '<div class="dash-tx-icon" style="background: ' + iconBg + '; color: ' + iconColor + ';">' + icon + '</div>' +
+                                    '<div>' +
+                                        '<div class="dash-tx-title">' + esc(tx.title) + '</div>' +
+                                        '<div class="dash-tx-meta">' + esc(dateStr) + ' • ' + esc(tx.category || 'Transfer') + '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div>' +
+                                    '<div class="dash-tx-amount ' + amtClass + '">' + esc(amtFormatted) + '</div>' +
+                                    '<div class="dash-tx-meta" style="text-align:right;">' + esc(tx.status || 'Completed ✓') + '</div>' +
+                                '</div>';
+                            txList.appendChild(item);
+                        });
+                    });
+                }
+            }
+
+            renderPrimaryCard();
+            loadDashboardData();
         });
     </script>
 </body>
